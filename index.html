@@ -159,6 +159,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 3rem;
         }
 
         .drop-icon img {
@@ -262,6 +263,7 @@
 
         .code-preview.success {
             border-color: var(--success-green);
+            background-color: #d4edda;
         }
 
         #generatedCode {
@@ -386,7 +388,7 @@
             color: var(--dark-gray);
         }
 
-        .btn:hover {
+        .btn:hover:not(:disabled) {
             transform: translateY(-1px);
             box-shadow: var(--shadow-hover);
         }
@@ -409,7 +411,7 @@
             border: 1px solid var(--medium-gray);
         }
 
-        .btn-secondary:hover {
+        .btn-secondary:hover:not(:disabled) {
              background: var(--medium-gray);
         }
 
@@ -465,6 +467,20 @@
             font-size: 1.1rem;
         }
 
+        /* Browser Support Warning */
+        .browser-warning {
+            background: var(--warning-orange);
+            color: #333;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .browser-warning.show {
+            display: block;
+        }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
             .app-container {
@@ -498,8 +514,6 @@
                  width: 100%;
              }
         }
-
-        /* Printex PDF Renamer - Component Styles */
 
         /* Modal Styles */
         .modal {
@@ -548,7 +562,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
 
         @keyframes slideInModal {
             from {
@@ -833,8 +846,8 @@
         <header class="app-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <img src="images/Printex_Logo_Slogan_CMYK.png" alt="Printex Logo">
-                    <span class="version">v2.5.0</span>
+                    <img src="images/Printex_Logo_Slogan_CMYK.png" alt="Printex Logo" onerror="this.style.display='none'">
+                    <span class="version">v2.5.1</span>
                 </div>
                 <div class="header-actions">
                     <button id="settingsBtn" class="btn btn-secondary">
@@ -847,6 +860,13 @@
             </div>
         </header>
 
+        <!-- Browser Support Warning -->
+        <div id="browserWarning" class="browser-warning">
+            <strong>⚠️ Browser-Einschränkung:</strong>
+            Die Hotfolder-Funktionalität funktioniert nur in Chrome oder Edge.
+            In anderen Browsern steht nur der Download zur Verfügung.
+        </div>
+
         <!-- Main Content -->
         <main class="main-content">
             <div class="content-grid">
@@ -856,7 +876,7 @@
                         <div id="fileDropZone" class="file-drop-zone">
                             <div class="drop-content">
                                 <div class="drop-icon">
-                                    <img src="images/DragDrop.png" alt="Drag and Drop Icon">
+                                    <img src="images/DragDrop.png" alt="Drag and Drop Icon" onerror="this.innerHTML='📄'">
                                 </div>
                                 <h3>PDF hier hinziehen</h3>
                                 <p>oder klicken zum Auswählen</p>
@@ -968,7 +988,7 @@
                         <span class="icon">🚀</span> In Normal-Hotfolder
                     </button>
                      <button id="saveToGangingBtn" class="btn btn-success" disabled>
-                        <span class="icon">🚀</span> In Ganging-Hotfolder
+                        <span class="icon">🚀</span> In Sammelauftrags-Hotfolder
                     </button>
                 </div>
             </div>
@@ -1024,9 +1044,12 @@
                             <button id="addPaperBtn" class="btn btn-primary">Hinzufügen</button>
                         </div>
                     </div>
-                    </div>
                      <div id="hotfolderTab" class="tab-pane">
                         <h3>Hotfolder verwalten</h3>
+                        <div id="hotfolderSupport" class="browser-warning" style="display: none;">
+                            <strong>❌ Nicht unterstützt:</strong>
+                            Ihr Browser unterstützt die Hotfolder-API nicht. Bitte verwenden Sie Chrome oder Edge.
+                        </div>
                         <div class="hotfolder-setting">
                             <div class="hotfolder-setting-header">
                                 <h4>Normaler Auftrag</h4>
@@ -1061,31 +1084,30 @@
     </div>
 
     <!-- JavaScript Module -->
-    <script type="module">
+    <script>
         // ===================================================================================
-        // ALL JAVASCRIPT IS NOW INLINE TO AVOID MODULE RESOLUTION ERRORS
+        // Printex PDF Renamer - Fixed Version
         // ===================================================================================
 
-        // --- constants.js ---
+        // --- Constants ---
         const APP_INFO = {
-            NAME: 'Heidelberg PDF Renamer',
-            VERSION: '2.5.0',
+            NAME: 'Printex PDF-Automation',
+            VERSION: '2.5.1',
         };
+
         const FILE_CONSTANTS = {
             MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
             INVALID_FILENAME_CHARS: /[/\\?%*:|"<>\x00-\x1f]/g,
         };
+
         const STORAGE_KEYS = {
             DB_NAME: 'PrintexDB-v2',
             DB_STORE_HANDLES: 'hotfolderHandles'
         };
-        const CONFIG_CONSTANTS = {
-            VERSION: '2.5.0',
-        };
 
-        // --- Integrierte Konfiguration ---
+        // --- Embedded Configuration ---
         const EMBEDDED_CONFIG = {
-            "version": "2.3.0",
+            "version": "2.5.1",
             "customPaper": {
                 "id": "specialPaper",
                 "name": "Spezialpapier",
@@ -1093,53 +1115,53 @@
             },
             "machines": [
                 {
-                    "id": "machine_lkyf2y2n_x28l2h8zq",
+                    "id": "machine_1",
                     "name": "Speedmaster SM52-2",
                     "code": "SM52"
                 },
                 {
-                    "id": "machine_lkyf2y2n_u7n4q7csa",
+                    "id": "machine_2",
                     "name": "Speedmaster SM52-5 p+l",
                     "code": "SM52"
                 },
                 {
-                    "id": "machine_lkyf2y2o_84e9j4z5r",
+                    "id": "machine_3",
                     "name": "Speedmaster CX75 l (X0)",
                     "code": "CX75"
                 }
             ],
             "products": [
                 {
-                    "id": "product_lkyf2y2o_i9y8b9xvr",
+                    "id": "product_1",
                     "name": "Broschüre Rückstich",
                     "code": "BR_R"
                 },
                 {
-                    "id": "product_lkyf2y2o_1h2g3f4d5",
+                    "id": "product_2",
                     "name": "Flyer ungefalzt",
                     "code": "FLY_U"
                 },
                 {
-                    "id": "product_lkyf2y2p_abc123def",
+                    "id": "product_3",
                     "name": "Visitenkarte",
                     "code": "VK"
                 }
             ],
             "papers": [
                 {
-                    "id": "paper_lkyf2y2p_qwe987rty",
+                    "id": "paper_1",
                     "name": "Novatech 170g",
                     "code": "Nov170",
                     "type": "gestrichen"
                 },
                 {
-                    "id": "paper_lkyf2y2p_poi098uyt",
+                    "id": "paper_2",
                     "name": "Image Impacht 90g",
                     "code": "Im90",
                     "type": "ungestrichen"
                 },
                 {
-                    "id": "paper_lkyf2y2q_mnb234vcx",
+                    "id": "paper_3",
                     "name": "Tintoretto",
                     "code": "Tinto",
                     "type": "special"
@@ -1147,19 +1169,31 @@
             ]
         };
 
-        // --- helpers.js ---
+        // --- Helper Functions ---
         function generateUniqueId(prefix = 'id') {
             const timestamp = Date.now().toString(36);
             const random = Math.random().toString(36).substr(2, 9);
             return `${prefix}_${timestamp}_${random}`;
         }
 
+        function checkBrowserSupport() {
+            const hasFileSystemAPI = 'showDirectoryPicker' in window;
+            const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            const isEdge = /Edg/.test(navigator.userAgent);
+
+            return {
+                hasFileSystemAPI,
+                isSupported: hasFileSystemAPI && (isChrome || isEdge),
+                browserName: isChrome ? 'Chrome' : isEdge ? 'Edge' : 'Unknown'
+            };
+        }
+
         // --- IndexedDB Helper ---
         const idb = {
-            openDB() {
+            async openDB() {
                 return new Promise((resolve, reject) => {
                     const request = indexedDB.open(STORAGE_KEYS.DB_NAME, 1);
-                    request.onerror = () => reject("IndexedDB konnte nicht geöffnet werden.");
+                    request.onerror = () => reject(new Error("IndexedDB konnte nicht geöffnet werden."));
                     request.onsuccess = () => resolve(request.result);
                     request.onupgradeneeded = (event) => {
                         const db = event.target.result;
@@ -1169,61 +1203,62 @@
                     };
                 });
             },
+
             async get(key) {
-                const db = await this.openDB();
-                return new Promise((resolve) => {
-                    const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readonly');
-                    const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
-                    const request = store.get(key);
-                    transaction.oncomplete = () => {
-                        resolve(request.result);
-                        db.close();
-                    };
-                });
+                try {
+                    const db = await this.openDB();
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readonly');
+                        const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
+                        const request = store.get(key);
+
+                        transaction.oncomplete = () => {
+                            resolve(request.result);
+                            db.close();
+                        };
+
+                        transaction.onerror = () => {
+                            reject(transaction.error);
+                            db.close();
+                        };
+                    });
+                } catch (error) {
+                    console.warn('IndexedDB get error:', error);
+                    return null;
+                }
             },
+
             async set(key, value) {
-                const db = await this.openDB();
-                return new Promise((resolve) => {
-                     const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readwrite');
-                     const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
-                     store.put(value, key);
-                     transaction.oncomplete = () => {
-                         resolve();
-                         db.close();
-                     };
-                });
+                try {
+                    const db = await this.openDB();
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readwrite');
+                        const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
+                        store.put(value, key);
+
+                        transaction.oncomplete = () => {
+                            resolve();
+                            db.close();
+                        };
+
+                        transaction.onerror = () => {
+                            reject(transaction.error);
+                            db.close();
+                        };
+                    });
+                } catch (error) {
+                    console.warn('IndexedDB set error:', error);
+                }
             }
         };
 
-
-        // --- configManager.js ---
+        // --- Classes ---
         class ConfigManager {
             constructor() {
                 this.config = null;
             }
 
-            _getDefaultConfig() {
-                return {
-                    version: CONFIG_CONSTANTS.VERSION,
-                    customPaper: { id: 'specialPaper', name: 'Spezialpapier', code: 'special' },
-                    machines: [
-                        { id: generateUniqueId('machine'), name: 'Speedmaster XL 106', code: 'XL106' },
-                        { id: generateUniqueId('machine'), name: 'Speedmaster CX 75', code: 'CX75' },
-                    ],
-                    products: [
-                        { id: generateUniqueId('product'), name: 'Broschüre Rückstich', code: 'BR_R' },
-                        { id: generateUniqueId('product'), name: 'Flyer ungefalzt', code: 'FLY_U' },
-                    ],
-                    papers: [
-                        { id: generateUniqueId('paper'), name: 'Satimat 170g', code: 'Sat170', type: 'gestrichen' },
-                        { id: generateUniqueId('paper'), name: 'PlanoJet 90g', code: 'Pla90', type: 'ungestrichen' },
-                        { id: generateUniqueId('paper'), name: 'Spezialpapier XYZ', code: 'SP_XYZ', type: 'special' },
-                    ]
-                };
-            }
-
             async loadConfig() {
-                // Verwende die eingebettete Konfiguration direkt
                 this.config = { ...EMBEDDED_CONFIG };
                 console.log('Integrierte Konfiguration erfolgreich geladen.');
                 return { config: this.config, source: 'embedded' };
@@ -1237,16 +1272,14 @@
             }
 
             updateItem(type, id, updates) {
-                if (!this.config[type] && type !== 'customPaper') throw new Error('Ungültiger Konfigurationstyp');
-
                 if (type === 'customPaper') {
                     this.config.customPaper = { ...this.config.customPaper, ...updates };
                 } else {
+                    if (!this.config[type]) throw new Error('Ungültiger Konfigurationstyp');
                     const itemIndex = this.config[type].findIndex(i => i.id === id);
                     if (itemIndex === -1) throw new Error('Eintrag nicht gefunden');
                     this.config[type][itemIndex] = { ...this.config[type][itemIndex], ...updates };
                 }
-
                 return this.config;
             }
 
@@ -1274,7 +1307,6 @@
             }
         }
 
-        // --- fileHandler.js ---
         class FileHandler {
             async downloadFile(file, newFileName) {
                 try {
@@ -1295,9 +1327,8 @@
             }
         }
 
-        // --- productCode.js ---
         class ProductCodeGenerator {
-             generate(formData, config) {
+            generate(formData, config) {
                 try {
                     if (!this.validateInput(formData)) {
                         return '';
@@ -1317,8 +1348,6 @@
                     'auftragsnummer', 'kunde', 'auftragsposition',
                     'maschine', 'auflage', 'produkt', 'papierart', 'papiername'
                 ];
-
-                if (!formData['papierart']) return false;
 
                 return requiredFields.every(field => {
                     const value = formData[field];
@@ -1407,58 +1436,100 @@
             }
         }
 
-        // --- hotfolderAPI.js ---
         class HotfolderAPI {
             constructor() {
-                this.isSupported = 'showDirectoryPicker' in window;
+                const support = checkBrowserSupport();
+                this.isSupported = support.isSupported;
+                this.hasAPI = support.hasFileSystemAPI;
             }
 
             async selectHotfolder() {
-                if (!this.isSupported) throw new Error('File System Access API wird nicht unterstützt.');
+                if (!this.isSupported) {
+                    throw new Error('File System Access API wird nicht unterstützt. Verwenden Sie Chrome oder Edge.');
+                }
+
                 try {
-                    const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite'});
+                    const dirHandle = await window.showDirectoryPicker({
+                        mode: 'readwrite',
+                        startIn: 'documents'
+                    });
                     return dirHandle;
                 } catch (error) {
-                    if (error.name === 'AbortError') return null;
+                    if (error.name === 'AbortError') {
+                        return null; // User cancelled
+                    }
+                    console.error('Hotfolder selection error:', error);
                     throw new Error(`Hotfolder konnte nicht ausgewählt werden: ${error.message}`);
                 }
             }
 
-            async verifyPermission(dirHandle) {
+            async verifyPermission(dirHandle, withWrite = true) {
                 if (!dirHandle) return false;
-                const options = { mode: 'readwrite' };
-                if (await dirHandle.queryPermission(options) === 'granted') return true;
-                if (await dirHandle.requestPermission(options) === 'granted') return true;
-                return false;
+
+                try {
+                    const options = withWrite ? { mode: 'readwrite' } : { mode: 'read' };
+
+                    // Check current permission
+                    if (await dirHandle.queryPermission(options) === 'granted') {
+                        return true;
+                    }
+
+                    // Request permission
+                    if (await dirHandle.requestPermission(options) === 'granted') {
+                        return true;
+                    }
+
+                    return false;
+                } catch (error) {
+                    console.warn('Permission verification failed:', error);
+                    return false;
+                }
             }
 
             async saveToHotfolder(dirHandle, file, fileName) {
-                if (!dirHandle) throw new Error('Kein Hotfolder ausgewählt');
-
-                const hasPermission = await this.verifyPermission(dirHandle);
-                if (!hasPermission) {
-                    throw new Error('Keine Berechtigung für den Hotfolder. Bitte neu auswählen.');
+                if (!dirHandle) {
+                    throw new Error('Kein Hotfolder ausgewählt');
                 }
 
-                const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
-                const writable = await fileHandle.createWritable();
-                await writable.write(file);
-                await writable.close();
-                return true;
+                try {
+                    const hasPermission = await this.verifyPermission(dirHandle);
+                    if (!hasPermission) {
+                        throw new Error('Keine Berechtigung für den Hotfolder. Bitte neu auswählen.');
+                    }
+
+                    const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(file);
+                    await writable.close();
+
+                    return true;
+                } catch (error) {
+                    console.error('Hotfolder save error:', error);
+
+                    if (error.name === 'NotAllowedError') {
+                        throw new Error('Zugriff auf Hotfolder verweigert. Bitte Berechtigungen prüfen.');
+                    } else if (error.name === 'QuotaExceededError') {
+                        throw new Error('Nicht genügend Speicherplatz im Hotfolder.');
+                    } else if (error.name === 'InvalidModificationError') {
+                        throw new Error('Datei kann nicht überschrieben werden. Möglicherweise ist sie in Verwendung.');
+                    }
+
+                    throw new Error(`Fehler beim Speichern: ${error.message}`);
+                }
             }
         }
 
-        // --- validation.js ---
         class Validator {
             validateFile(file) {
                 if (!file) return { valid: false, error: 'Keine Datei ausgewählt' };
                 if (file.type !== 'application/pdf') return { valid: false, error: 'Nur PDF-Dateien sind erlaubt' };
-                if (file.size > 100 * 1024 * 1024) return { valid: false, error: 'Datei ist zu gross (max. 100MB)' };
+                if (file.size > FILE_CONSTANTS.MAX_FILE_SIZE) return { valid: false, error: 'Datei ist zu gross (max. 100MB)' };
+                if (file.size === 0) return { valid: false, error: 'Datei ist leer' };
                 return { valid: true };
             }
 
             validateField(fieldName, value) {
-                if (!value || !value.trim()) {
+                if (!value || !value.toString().trim()) {
                      return { valid: false, error: 'Feld darf nicht leer sein' };
                 }
                 if (fieldName === 'auftragsnummer' && !/^A\d+$/i.test(value)) {
@@ -1468,28 +1539,44 @@
             }
         }
 
-        // --- ui.js ---
         class UIManager {
             constructor() {
-                this.settingsModal = document.getElementById('settingsModal');
-                this.closeSettingsBtn = document.getElementById('closeSettings');
-                this.tabButtons = document.querySelectorAll('.tab-btn');
-                this.tabPanes = document.querySelectorAll('.tab-pane');
-                this.unsavedWarning = document.getElementById('settingsUnsavedWarning');
-
                 this.setupEventListeners();
+                this.checkBrowserSupport();
             }
 
             setupEventListeners() {
-                this.closeSettingsBtn.addEventListener('click', () => this.closeModal('settingsModal'));
-                this.settingsModal.addEventListener('click', (e) => {
-                    if (e.target === this.settingsModal) {
-                         this.closeModal('settingsModal');
-                    }
-                });
-                 this.tabButtons.forEach(btn => {
+                // Settings modal
+                const settingsModal = document.getElementById('settingsModal');
+                const closeSettingsBtn = document.getElementById('closeSettings');
+
+                if (closeSettingsBtn) {
+                    closeSettingsBtn.addEventListener('click', () => this.closeModal('settingsModal'));
+                }
+
+                if (settingsModal) {
+                    settingsModal.addEventListener('click', (e) => {
+                        if (e.target === settingsModal) {
+                             this.closeModal('settingsModal');
+                        }
+                    });
+                }
+
+                // Tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => {
                     btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
                 });
+            }
+
+            checkBrowserSupport() {
+                const support = checkBrowserSupport();
+                const browserWarning = document.getElementById('browserWarning');
+                const hotfolderSupport = document.getElementById('hotfolderSupport');
+
+                if (!support.isSupported) {
+                    if (browserWarning) browserWarning.classList.add('show');
+                    if (hotfolderSupport) hotfolderSupport.style.display = 'block';
+                }
             }
 
             showNotification(type, title, message, duration = 4000) {
@@ -1514,14 +1601,12 @@
                 const closeBtn = notification.querySelector('.notification-close');
                 const timer = setTimeout(() => this.removeNotification(notifId), duration);
 
-                closeBtn.addEventListener('click', () => {
-                    clearTimeout(timer);
-                    this.removeNotification(notifId);
-                });
-            }
-
-            showUnsavedChangesWarning(show) {
-                this.unsavedWarning.style.display = show ? 'flex' : 'none';
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        clearTimeout(timer);
+                        this.removeNotification(notifId);
+                    });
+                }
             }
 
             removeNotification(id) {
@@ -1536,7 +1621,10 @@
                 const modal = document.getElementById(modalId);
                 if (modal) {
                      modal.style.display = 'flex';
-                     modal.querySelector('.modal-content').style.animation = 'slideInModal 0.3s forwards';
+                     const content = modal.querySelector('.modal-content');
+                     if (content) {
+                         content.style.animation = 'slideInModal 0.3s forwards';
+                     }
                 }
             }
 
@@ -1544,20 +1632,34 @@
                  const modal = document.getElementById(modalId);
                  if (modal) {
                     const content = modal.querySelector('.modal-content');
-                    content.style.animation = 'slideOutModal 0.3s forwards';
-                    content.addEventListener('animationend', () => {
-                       modal.style.display = 'none';
-                       content.style.animation = '';
-                    }, { once: true });
+                    if (content) {
+                        content.style.animation = 'slideOutModal 0.3s forwards';
+                        content.addEventListener('animationend', () => {
+                           modal.style.display = 'none';
+                           content.style.animation = '';
+                        }, { once: true });
+                    } else {
+                        modal.style.display = 'none';
+                    }
                  }
             }
 
             switchTab(tabName) {
-                this.tabButtons.forEach(btn => btn.classList.remove('active'));
-                this.tabPanes.forEach(pane => pane.classList.remove('active'));
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
 
-                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-                document.getElementById(`${tabName}Tab`).classList.add('active');
+                const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
+                const targetPane = document.getElementById(`${tabName}Tab`);
+
+                if (targetTab) targetTab.classList.add('active');
+                if (targetPane) targetPane.classList.add('active');
+            }
+
+            showUnsavedChangesWarning(show) {
+                const warning = document.getElementById('settingsUnsavedWarning');
+                if (warning) {
+                    warning.style.display = show ? 'flex' : 'none';
+                }
             }
 
              showConfirmDialog(title, message, onConfirm, onCancel = () => {}) {
@@ -1581,19 +1683,27 @@
 
                 const cleanup = () => overlay.remove();
 
-                overlay.querySelector('.confirm-btn').onclick = () => {
-                    cleanup();
-                    onConfirm();
-                };
-                overlay.querySelector('.cancel-btn').onclick = () => {
-                    cleanup();
-                    onCancel();
-                };
+                const confirmBtn = overlay.querySelector('.confirm-btn');
+                const cancelBtn = overlay.querySelector('.cancel-btn');
+
+                if (confirmBtn) {
+                    confirmBtn.onclick = () => {
+                        cleanup();
+                        onConfirm();
+                    };
+                }
+
+                if (cancelBtn) {
+                    cancelBtn.onclick = () => {
+                        cleanup();
+                        onCancel();
+                    };
+                }
             }
         }
 
-        // --- main.js ---
-        class HeidelbergPDFRenamer {
+        // --- Main Application Class ---
+        class PrintexPDFRenamer {
             constructor() {
                 this.currentFile = null;
                 this.config = null;
@@ -1612,53 +1722,66 @@
 
             async init() {
                 console.log('Printex PDF-Automation wird initialisiert...');
-                await this.loadConfiguration();
-                await this.loadHotfolders();
-                this.setupEventListeners();
-                this.updateUIState();
+
+                try {
+                    await this.loadConfiguration();
+                    await this.loadHotfolders();
+                    this.setupEventListeners();
+                    this.updateUIState();
+                    this.updateProductCode();
+
+                    this.uiManager.showNotification('success', 'Bereit', 'PDF-Automation ist einsatzbereit.', 3000);
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    this.uiManager.showNotification('error', 'Initialisierungsfehler', error.message);
+                }
             }
 
             async loadConfiguration() {
-                const { config, source } = await this.configManager.loadConfig();
+                const { config } = await this.configManager.loadConfig();
                 this.config = config;
-
-                // Positive Meldung für die integrierte Konfiguration
-                this.uiManager.showNotification('success', 'Konfiguration', 'Einstellungen erfolgreich geladen.', 4000);
-
                 this.populateDropdowns();
                 this.updatePaperTypeUI();
                 this.uiManager.showUnsavedChangesWarning(false);
             }
 
             async loadHotfolders() {
-                this.hotfolderNormalHandle = await idb.get('hotfolder-normal');
-                this.hotfolderGangingHandle = await idb.get('hotfolder-ganging');
+                try {
+                    this.hotfolderNormalHandle = await idb.get('hotfolder-normal');
+                    this.hotfolderGangingHandle = await idb.get('hotfolder-ganging');
 
-                if(this.hotfolderNormalHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderNormalHandle))) {
-                    this.hotfolderNormalHandle = null;
-                    idb.set('hotfolder-normal', null);
-                    this.uiManager.showNotification('warning', 'Hotfolder-Berechtigung', 'Berechtigung für Normal-Hotfolder abgelaufen. Bitte neu auswählen.');
-                }
-                if(this.hotfolderGangingHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderGangingHandle))) {
-                    this.hotfolderGangingHandle = null;
-                    idb.set('hotfolder-ganging', null);
-                    this.uiManager.showNotification('warning', 'Hotfolder-Berechtigung', 'Berechtigung für Ganging-Hotfolder abgelaufen. Bitte neu auswählen.');
-                }
+                    // Check permissions
+                    if(this.hotfolderNormalHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderNormalHandle))) {
+                        this.hotfolderNormalHandle = null;
+                        await idb.set('hotfolder-normal', null);
+                    }
 
-                this.updateHotfolderUI();
+                    if(this.hotfolderGangingHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderGangingHandle))) {
+                        this.hotfolderGangingHandle = null;
+                        await idb.set('hotfolder-ganging', null);
+                    }
+
+                    this.updateHotfolderUI();
+                } catch (error) {
+                    console.warn('Error loading hotfolders:', error);
+                }
             }
 
             populateDropdowns() {
                 const populate = (id, items) => {
                     const select = document.getElementById(id);
+                    if (!select) return;
+
                     const currentValue = select.value;
                     select.innerHTML = `<option value="">-- Bitte wählen --</option>`;
+
                     items.forEach(item => {
                         const option = document.createElement('option');
                         option.value = item.code;
                         option.textContent = `${item.name} (${item.code})`;
                         select.appendChild(option);
                     });
+
                     if (Array.from(select.options).some(opt => opt.value === currentValue)) {
                          select.value = currentValue;
                     }
@@ -1667,18 +1790,23 @@
                 populate('maschine', this.config.machines);
                 populate('produkt', this.config.products);
 
+                // Paper dropdown based on selected type
                 const paperSelect = document.getElementById('papiername');
-                const selectedPaperTypeRadio = document.querySelector('input[name="papierart"]:checked');
-                const selectedPaperType = selectedPaperTypeRadio ? selectedPaperTypeRadio.value : 'gestrichen';
+                if (paperSelect) {
+                    const selectedPaperTypeRadio = document.querySelector('input[name="papierart"]:checked');
+                    const selectedPaperType = selectedPaperTypeRadio ? selectedPaperTypeRadio.value : 'gestrichen';
 
-                let papersToShow = [];
-                const typeToFilter = selectedPaperType === this.config.customPaper.code ? 'special' : selectedPaperType;
-                papersToShow = this.config.papers.filter(p => p.type === typeToFilter);
-                populate('papiername', papersToShow);
+                    let papersToShow = [];
+                    const typeToFilter = selectedPaperType === this.config.customPaper.code ? 'special' : selectedPaperType;
+                    papersToShow = this.config.papers.filter(p => p.type === typeToFilter);
+                    populate('papiername', papersToShow);
+                }
             }
 
             updatePaperTypeUI() {
                 const group = document.getElementById('paperTypeGroup');
+                if (!group) return;
+
                 const existingCustom = group.querySelector('#customPaperRadioLabel');
                 if(existingCustom) existingCustom.remove();
 
@@ -1695,6 +1823,8 @@
 
             getFormData() {
                 const form = document.getElementById('pdfRenameForm');
+                if (!form) return {};
+
                 const formData = new FormData(form);
                 const data = {};
                 for(const [key, value] of formData.entries()) {
@@ -1713,95 +1843,207 @@
                 const codeElement = document.getElementById('generatedCode');
                 const codePreview = document.getElementById('productCodePreview');
 
-                if (productCode && this.isFormValid(formData)) {
-                    codeElement.textContent = productCode;
-                    codePreview.classList.add('success');
-                } else {
-                    codeElement.textContent = 'Bitte alle Felder ausfüllen...';
-                    codePreview.classList.remove('success');
+                if (codeElement && codePreview) {
+                    if (productCode && this.isFormValid(formData)) {
+                        codeElement.textContent = productCode;
+                        codePreview.classList.add('success');
+                    } else {
+                        codeElement.textContent = 'Bitte alle Felder ausfüllen...';
+                        codePreview.classList.remove('success');
+                    }
                 }
+
                 this.updateUIState();
             }
 
             setupEventListeners() {
+                // File handling
                 const fileDropZone = document.getElementById('fileDropZone');
                 const fileInput = document.getElementById('fileInput');
-                fileDropZone.addEventListener('click', () => fileInput.click());
-                ['dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    fileDropZone.addEventListener(eventName, (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        if (eventName === 'dragover') fileDropZone.classList.add('drag-over');
-                        if (eventName === 'dragleave' || eventName === 'drop') fileDropZone.classList.remove('drag-over');
-                        if (eventName === 'drop') this.processFile(e.dataTransfer.files[0]);
+
+                if (fileDropZone && fileInput) {
+                    fileDropZone.addEventListener('click', () => fileInput.click());
+
+                    ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        fileDropZone.addEventListener(eventName, (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            if (eventName === 'dragover') {
+                                fileDropZone.classList.add('drag-over');
+                            } else if (eventName === 'dragleave' || eventName === 'drop') {
+                                fileDropZone.classList.remove('drag-over');
+                            }
+
+                            if (eventName === 'drop' && e.dataTransfer.files.length > 0) {
+                                this.processFile(e.dataTransfer.files[0]);
+                            }
+                        });
                     });
-                });
-                fileInput.addEventListener('change', (e) => this.processFile(e.target.files[0]));
-                document.getElementById('removeFile').addEventListener('click', () => this.removeFile());
 
-                document.getElementById('pdfRenameForm').addEventListener('input', (e) => {
-                    if (e.target.name === 'papierart') {
-                       this.populateDropdowns();
-                    }
-                    this.updateProductCode();
-                });
+                    fileInput.addEventListener('change', (e) => {
+                        if (e.target.files.length > 0) {
+                            this.processFile(e.target.files[0]);
+                        }
+                    });
+                }
 
-                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadRenamedFile());
-                document.getElementById('saveToNormalBtn').addEventListener('click', () => this.saveToHotfolder('normal'));
-                document.getElementById('saveToGangingBtn').addEventListener('click', () => this.saveToHotfolder('ganging'));
+                // Remove file button
+                const removeFileBtn = document.getElementById('removeFile');
+                if (removeFileBtn) {
+                    removeFileBtn.addEventListener('click', () => this.removeFile());
+                }
 
-                document.getElementById('settingsBtn').addEventListener('click', () => {
+                // Form changes
+                const form = document.getElementById('pdfRenameForm');
+                if (form) {
+                    form.addEventListener('input', (e) => {
+                        if (e.target.name === 'papierart') {
+                           this.populateDropdowns();
+                        }
+                        this.updateProductCode();
+                    });
+
+                    form.addEventListener('change', (e) => {
+                        if (e.target.name === 'papierart') {
+                           this.populateDropdowns();
+                        }
+                        this.updateProductCode();
+                    });
+                }
+
+                // Action buttons
+                this.setupButton('downloadBtn', () => this.downloadRenamedFile());
+                this.setupButton('saveToNormalBtn', () => this.saveToHotfolder('normal'));
+                this.setupButton('saveToGangingBtn', () => this.saveToHotfolder('ganging'));
+
+                // Header buttons
+                this.setupButton('settingsBtn', () => {
                     this.populateSettingsLists();
                     this.uiManager.openModal('settingsModal');
                 });
-                document.getElementById('helpBtn').addEventListener('click', () => {
+
+                this.setupButton('helpBtn', () => {
                     this.uiManager.showNotification('info', 'Hilfe', 'Ziehen Sie eine PDF-Datei in die Box und füllen Sie alle Formularfelder aus, um den Dateinamen zu generieren.', 8000);
                 });
 
-                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                // Settings modal delegation
+                document.addEventListener('click', (e) => {
                     const button = e.target.closest('button');
-                    if (!button) return;
+                    if (!button || !document.getElementById('settingsModal').contains(button)) return;
+
                     const { type, id } = button.dataset;
-                    if (button.classList.contains('btn-delete')) this.deleteConfigItem(type, id);
-                    if (button.classList.contains('btn-edit')) this.editConfigItem(type, id);
+                    if (button.classList.contains('btn-delete') && type && id) {
+                        this.deleteConfigItem(type, id);
+                    }
+                    if (button.classList.contains('btn-edit') && type && id) {
+                        this.editConfigItem(type, id);
+                    }
                 });
 
-                document.getElementById('addMachineBtn').addEventListener('click', () => this.addConfigItem('machines', { name: document.getElementById('newMachineName').value, code: document.getElementById('newMachineCode').value }));
-                document.getElementById('addProductBtn').addEventListener('click', () => this.addConfigItem('products', { name: document.getElementById('newProductName').value, code: document.getElementById('newProductCode').value }));
-                document.getElementById('addPaperBtn').addEventListener('click', () => this.addConfigItem('papers', { name: document.getElementById('newPaperName').value, code: document.getElementById('newPaperCode').value, type: document.getElementById('newPaperType').value }));
+                // Add buttons
+                this.setupButton('addMachineBtn', () => this.addConfigItem('machines', {
+                    name: document.getElementById('newMachineName')?.value || '',
+                    code: document.getElementById('newMachineCode')?.value || ''
+                }));
 
-                document.getElementById('exportConfig').addEventListener('click', () => this.exportConfiguration());
-                document.getElementById('exportChangesBtn').addEventListener('click', () => this.exportConfiguration());
-                document.getElementById('importConfig').addEventListener('click', () => document.getElementById('importFile').click());
-                document.getElementById('importFile').addEventListener('change', (e) => this.importConfiguration(e.target.files[0]));
+                this.setupButton('addProductBtn', () => this.addConfigItem('products', {
+                    name: document.getElementById('newProductName')?.value || '',
+                    code: document.getElementById('newProductCode')?.value || ''
+                }));
 
-                document.getElementById('selectNormalHotfolder').addEventListener('click', () => this.selectAndSaveHotfolder('normal'));
-                document.getElementById('selectGangingHotfolder').addEventListener('click', () => this.selectAndSaveHotfolder('ganging'));
+                this.setupButton('addPaperBtn', () => this.addConfigItem('papers', {
+                    name: document.getElementById('newPaperName')?.value || '',
+                    code: document.getElementById('newPaperCode')?.value || '',
+                    type: document.getElementById('newPaperType')?.value || 'gestrichen'
+                }));
 
-                document.getElementById('addMachine').addEventListener('click', () => {this.uiManager.switchTab('machines'); this.uiManager.openModal('settingsModal')});
-                document.getElementById('addProduct').addEventListener('click', () => {this.uiManager.switchTab('products'); this.uiManager.openModal('settingsModal')});
-                document.getElementById('addPaper').addEventListener('click', () => {this.uiManager.switchTab('papers'); this.uiManager.openModal('settingsModal')});
+                // Export/Import
+                this.setupButton('exportConfig', () => this.exportConfiguration());
+                this.setupButton('exportChangesBtn', () => this.exportConfiguration());
+                this.setupButton('importConfig', () => {
+                    const fileInput = document.getElementById('importFile');
+                    if (fileInput) fileInput.click();
+                });
+
+                const importFile = document.getElementById('importFile');
+                if (importFile) {
+                    importFile.addEventListener('change', (e) => {
+                        if (e.target.files.length > 0) {
+                            this.importConfiguration(e.target.files[0]);
+                        }
+                    });
+                }
+
+                // Hotfolder buttons
+                this.setupButton('selectNormalHotfolder', () => this.selectAndSaveHotfolder('normal'));
+                this.setupButton('selectGangingHotfolder', () => this.selectAndSaveHotfolder('ganging'));
+
+                // Quick add buttons (+ buttons in form)
+                this.setupButton('addMachine', () => {
+                    this.uiManager.switchTab('machines');
+                    this.uiManager.openModal('settingsModal');
+                });
+                this.setupButton('addProduct', () => {
+                    this.uiManager.switchTab('products');
+                    this.uiManager.openModal('settingsModal');
+                });
+                this.setupButton('addPaper', () => {
+                    this.uiManager.switchTab('papers');
+                    this.uiManager.openModal('settingsModal');
+                });
+            }
+
+            setupButton(id, handler) {
+                const button = document.getElementById(id);
+                if (button && handler) {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        try {
+                            handler(e);
+                        } catch (error) {
+                            console.error(`Error in ${id} handler:`, error);
+                            this.uiManager.showNotification('error', 'Fehler', error.message);
+                        }
+                    });
+                }
             }
 
             processFile(file) {
+                if (!file) return;
+
                 const validation = this.validator.validateFile(file);
                 if (!validation.valid) {
                     this.uiManager.showNotification('error', 'Ungültige Datei', validation.error);
                     return;
                 }
+
                 this.currentFile = file;
-                document.getElementById('fileName').textContent = file.name;
-                document.getElementById('fileSize').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                document.getElementById('fileDropZone').style.display = 'none';
-                document.getElementById('filePreview').style.display = 'block';
+
+                const fileName = document.getElementById('fileName');
+                const fileSize = document.getElementById('fileSize');
+                const fileDropZone = document.getElementById('fileDropZone');
+                const filePreview = document.getElementById('filePreview');
+
+                if (fileName) fileName.textContent = file.name;
+                if (fileSize) fileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                if (fileDropZone) fileDropZone.style.display = 'none';
+                if (filePreview) filePreview.style.display = 'block';
+
                 this.updateUIState();
             }
 
             removeFile() {
                 this.currentFile = null;
-                document.getElementById('fileInput').value = '';
-                document.getElementById('fileDropZone').style.display = 'block';
-                document.getElementById('filePreview').style.display = 'none';
+
+                const fileInput = document.getElementById('fileInput');
+                const fileDropZone = document.getElementById('fileDropZone');
+                const filePreview = document.getElementById('filePreview');
+
+                if (fileInput) fileInput.value = '';
+                if (fileDropZone) fileDropZone.style.display = 'block';
+                if (filePreview) filePreview.style.display = 'none';
+
                 this.updateUIState();
             }
 
@@ -1809,14 +2051,27 @@
                 const hasFile = !!this.currentFile;
                 const formValid = this.isFormValid(this.getFormData());
 
-                document.getElementById('downloadBtn').disabled = !hasFile || !formValid;
-                document.getElementById('saveToNormalBtn').disabled = !hasFile || !formValid || !this.hotfolderNormalHandle;
-                document.getElementById('saveToGangingBtn').disabled = !hasFile || !formValid || !this.hotfolderGangingHandle;
+                this.updateButtonState('downloadBtn', hasFile && formValid);
+                this.updateButtonState('saveToNormalBtn', hasFile && formValid && !!this.hotfolderNormalHandle);
+                this.updateButtonState('saveToGangingBtn', hasFile && formValid && !!this.hotfolderGangingHandle);
+            }
+
+            updateButtonState(buttonId, enabled) {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.disabled = !enabled;
+                }
             }
 
             async downloadRenamedFile() {
-                if(document.getElementById('downloadBtn').disabled) return;
-                const newFileName = `${document.getElementById('generatedCode').textContent}${this.currentFile.name}`;
+                const downloadBtn = document.getElementById('downloadBtn');
+                if (!downloadBtn || downloadBtn.disabled || !this.currentFile) return;
+
+                const generatedCode = document.getElementById('generatedCode');
+                if (!generatedCode) return;
+
+                const newFileName = `${generatedCode.textContent}${this.currentFile.name}`;
+
                 try {
                     await this.fileHandler.downloadFile(this.currentFile, newFileName);
                     this.uiManager.showNotification('success', 'Download', 'Datei wurde umbenannt und heruntergeladen.');
@@ -1827,32 +2082,44 @@
 
             async saveToHotfolder(type) {
                 const handle = type === 'normal' ? this.hotfolderNormalHandle : this.hotfolderGangingHandle;
-                const button = type === 'normal' ? document.getElementById('saveToNormalBtn') : document.getElementById('saveToGangingBtn');
-                if(button.disabled) return;
+                const button = document.getElementById(type === 'normal' ? 'saveToNormalBtn' : 'saveToGangingBtn');
 
-                const newFileName = `${document.getElementById('generatedCode').textContent}${this.currentFile.name}`;
-                 try {
+                if (!button || button.disabled || !this.currentFile || !handle) return;
+
+                const generatedCode = document.getElementById('generatedCode');
+                if (!generatedCode) return;
+
+                const newFileName = `${generatedCode.textContent}${this.currentFile.name}`;
+
+                try {
                     await this.hotfolderAPI.saveToHotfolder(handle, this.currentFile, newFileName);
                     this.uiManager.showNotification('success', 'Gespeichert', `Datei im ${type}-Hotfolder abgelegt.`);
-                 } catch(error) {
+                } catch(error) {
                     this.uiManager.showNotification('error', 'Hotfolder Fehler', error.message);
                     if (error.message.includes("Berechtigung")) {
-                         this.loadHotfolders();
+                         await this.loadHotfolders();
                     }
-                 }
+                }
             }
 
             async selectAndSaveHotfolder(type) {
+                if (!this.hotfolderAPI.isSupported) {
+                    this.uiManager.showNotification('error', 'Nicht unterstützt', 'Hotfolder-Funktionalität benötigt Chrome oder Edge.');
+                    return;
+                }
+
                 try {
                     const handle = await this.hotfolderAPI.selectHotfolder();
                     if (handle) {
                         const key = `hotfolder-${type}`;
                         await idb.set(key, handle);
+
                         if (type === 'normal') {
                             this.hotfolderNormalHandle = handle;
                         } else {
                             this.hotfolderGangingHandle = handle;
                         }
+
                         this.uiManager.showNotification('success', 'Hotfolder gespeichert', `Der ${type}-Hotfolder wurde gespeichert.`);
                         this.updateHotfolderUI();
                         this.updateUIState();
@@ -1863,13 +2130,22 @@
             }
 
             updateHotfolderUI() {
-                document.getElementById('normalHotfolderPath').textContent = this.hotfolderNormalHandle?.name || 'Kein Ordner gewählt';
-                document.getElementById('gangingHotfolderPath').textContent = this.hotfolderGangingHandle?.name || 'Kein Ordner gewählt';
+                const normalPath = document.getElementById('normalHotfolderPath');
+                const gangingPath = document.getElementById('gangingHotfolderPath');
+
+                if (normalPath) {
+                    normalPath.textContent = this.hotfolderNormalHandle?.name || 'Kein Ordner gewählt';
+                }
+                if (gangingPath) {
+                    gangingPath.textContent = this.hotfolderGangingHandle?.name || 'Kein Ordner gewählt';
+                }
             }
 
             populateSettingsLists() {
                  const populateList = (type, items) => {
                     const container = document.getElementById(`${type}List`);
+                    if (!container) return;
+
                     container.innerHTML = '';
 
                     if (type === 'papers') {
@@ -1883,6 +2159,7 @@
                          container.appendChild(itemEl);
                     });
                 };
+
                 populateList('machines', this.config.machines);
                 populateList('products', this.config.products);
                 populateList('papers', this.config.papers);
@@ -1910,17 +2187,28 @@
                     this.uiManager.showNotification('error', 'Fehler', 'Name und Code sind erforderlich.');
                     return;
                 }
-                this.config = this.configManager.addItem(type, itemData);
-                this.uiManager.showUnsavedChangesWarning(true);
-                this.populateSettingsLists();
-                this.populateDropdowns();
-                const form = document.querySelector(`#${type}Tab .add-form`);
-                if(form) form.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+
+                try {
+                    this.config = this.configManager.addItem(type, itemData);
+                    this.uiManager.showUnsavedChangesWarning(true);
+                    this.populateSettingsLists();
+                    this.populateDropdowns();
+
+                    // Clear form
+                    const form = document.querySelector(`#${type}Tab .add-form`);
+                    if(form) {
+                        form.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+                    }
+
+                    this.uiManager.showNotification('success', 'Hinzugefügt', `${itemData.name} wurde hinzugefügt.`);
+                } catch (error) {
+                    this.uiManager.showNotification('error', 'Fehler', error.message);
+                }
             }
 
             editConfigItem(type, id) {
                 const isCustom = type === 'customPaper';
-                const item = isCustom ? this.config.customPaper : this.config[type].find(i => i.id === id);
+                const item = isCustom ? this.config.customPaper : this.config[type]?.find(i => i.id === id);
                 if (!item) return;
 
                 const newName = prompt(`Neuer Name für "${item.name}":`, item.name);
@@ -1938,25 +2226,35 @@
                     }
                 }
 
-                this.config = this.configManager.updateItem(type, id, updates);
-                this.uiManager.showUnsavedChangesWarning(true);
-                this.populateSettingsLists();
-                this.populateDropdowns();
-                if (isCustom) this.updatePaperTypeUI();
+                try {
+                    this.config = this.configManager.updateItem(type, id, updates);
+                    this.uiManager.showUnsavedChangesWarning(true);
+                    this.populateSettingsLists();
+                    this.populateDropdowns();
+                    if (isCustom) this.updatePaperTypeUI();
+                    this.uiManager.showNotification('success', 'Aktualisiert', `${newName} wurde aktualisiert.`);
+                } catch (error) {
+                    this.uiManager.showNotification('error', 'Fehler', error.message);
+                }
             }
 
             deleteConfigItem(type, id) {
-                const item = this.config[type].find(i => i.id === id);
+                const item = this.config[type]?.find(i => i.id === id);
                 if (!item) return;
 
                 this.uiManager.showConfirmDialog(
                     'Löschen bestätigen',
                     `Möchten Sie "${item.name}" wirklich löschen?`,
                      () => {
-                        this.config = this.configManager.deleteItem(type, id);
-                        this.uiManager.showUnsavedChangesWarning(true);
-                        this.populateSettingsLists();
-                        this.populateDropdowns();
+                        try {
+                            this.config = this.configManager.deleteItem(type, id);
+                            this.uiManager.showUnsavedChangesWarning(true);
+                            this.populateSettingsLists();
+                            this.populateDropdowns();
+                            this.uiManager.showNotification('success', 'Gelöscht', `${item.name} wurde gelöscht.`);
+                        } catch (error) {
+                            this.uiManager.showNotification('error', 'Fehler', error.message);
+                        }
                     }
                 );
             }
@@ -1968,40 +2266,68 @@
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = `config.json`;
+                    link.download = `printex-config-${new Date().toISOString().split('T')[0]}.json`;
                     link.click();
                     URL.revokeObjectURL(url);
-                    this.uiManager.showNotification('success', 'Export', 'config.json wurde heruntergeladen. Integrieren Sie die Konfiguration in das EMBEDDED_CONFIG Objekt der HTML-Datei.');
+
+                    this.uiManager.showNotification('success', 'Export', 'Konfiguration wurde heruntergeladen. Integrieren Sie diese in das EMBEDDED_CONFIG Objekt der HTML-Datei für permanente Speicherung.');
                     this.uiManager.showUnsavedChangesWarning(false);
-                } catch(e) {
-                     this.uiManager.showNotification('error', 'Exportfehler', e.message);
+                } catch(error) {
+                     this.uiManager.showNotification('error', 'Exportfehler', error.message);
                 }
             }
 
             importConfiguration(file) {
                 if (!file) return;
-                 try {
+
+                try {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        this.config = this.configManager.importConfig(e.target.result);
-                        this.populateSettingsLists();
-                        this.populateDropdowns();
-                        this.updatePaperTypeUI();
-                        this.uiManager.showNotification('success', 'Import', 'Konfiguration erfolgreich importiert.');
-                        this.uiManager.showUnsavedChangesWarning(true);
+                        try {
+                            this.config = this.configManager.importConfig(e.target.result);
+                            this.populateSettingsLists();
+                            this.populateDropdowns();
+                            this.updatePaperTypeUI();
+                            this.uiManager.showNotification('success', 'Import', 'Konfiguration erfolgreich importiert (temporär).');
+                            this.uiManager.showUnsavedChangesWarning(true);
+                        } catch (error) {
+                            this.uiManager.showNotification('error', 'Importfehler', error.message);
+                        }
+                    };
+                    reader.onerror = () => {
+                        this.uiManager.showNotification('error', 'Importfehler', 'Datei konnte nicht gelesen werden.');
                     };
                     reader.readAsText(file);
-                 } catch(e) {
-                     this.uiManager.showNotification('error', 'Importfehler', e.message);
-                 }
+                } catch(error) {
+                     this.uiManager.showNotification('error', 'Importfehler', error.message);
+                }
             }
         }
 
-        // Start application
+        // --- Start Application ---
         document.addEventListener('DOMContentLoaded', () => {
-            window.app = new HeidelbergPDFRenamer();
-        });
+            try {
+                window.app = new PrintexPDFRenamer();
+                console.log('Printex PDF-Automation gestartet');
+            } catch (error) {
+                console.error('Application startup error:', error);
 
+                // Show fallback error notification
+                const errorDiv = document.createElement('div');
+                errorDiv.style.cssText = `
+                    position: fixed; top: 20px; right: 20px; z-index: 9999;
+                    background: #dc3545; color: white; padding: 1rem; border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3); max-width: 400px;
+                `;
+                errorDiv.innerHTML = `
+                    <strong>❌ Anwendungsfehler</strong><br>
+                    Die Anwendung konnte nicht gestartet werden: ${error.message}
+                `;
+                document.body.appendChild(errorDiv);
+
+                setTimeout(() => errorDiv.remove(), 10000);
+            }
+        });
     </script>
 </body>
 </html>
