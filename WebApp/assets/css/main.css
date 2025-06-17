@@ -1,0 +1,446 @@
+/* Heidelberg PDF Renamer - Main Styles */
+
+/* CSS Reset und Basis */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Heidelberg Farbschema */
+:root {
+    --heidelberg-blue: #003f7f;
+    --heidelberg-light-blue: #4a90e2;
+    --heidelberg-accent: #ff6b35;
+    --success-green: #28a745;
+    --warning-orange: #ffc107;
+    --danger-red: #dc3545;
+    --light-gray: #f8f9fa;
+    --medium-gray: #dee2e6;
+    --dark-gray: #495057;
+    --border-radius: 8px;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* App Container */
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    box-shadow: var(--shadow);
+}
+
+/* Header */
+.app-header {
+    background: var(--heidelberg-blue);
+    color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section h1 {
+    font-size: 1.8rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+.version {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-left: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+    height: 100%;
+}
+
+/* Left Panel */
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* File Drop Zone */
+.file-drop-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.file-drop-zone {
+    border: 3px dashed var(--medium-gray);
+    border-radius: var(--border-radius);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--light-gray);
+}
+
+.file-drop-zone:hover,
+.file-drop-zone.drag-over {
+    border-color: var(--heidelberg-blue);
+    background: rgba(74, 144, 226, 0.1);
+    transform: translateY(-2px);
+}
+
+.drop-content {
+    pointer-events: none;
+}
+
+.drop-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.drop-content h3 {
+    color: var(--heidelberg-blue);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.drop-content p {
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+}
+
+/* File Preview */
+.file-preview {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    border: 2px solid var(--success-green);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.file-icon {
+    font-size: 2rem;
+}
+
+.file-info {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 500;
+    color: var(--heidelberg-blue);
+    margin-bottom: 0.25rem;
+    word-break: break-all;
+}
+
+.file-size {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+}
+
+.btn-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Product Code Section */
+.product-code-section {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+}
+
+.product-code-section h3 {
+    color: var(--heidelberg-blue);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.code-preview {
+    background: #f8f9fa;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-family: 'Courier New', monospace;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
+#generatedCode {
+    word-break: break-all;
+    color: var(--heidelberg-blue);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.code-explanation {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    font-style: italic;
+}
+
+/* Right Panel - Form */
+.right-panel {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+}
+
+.rename-form {
+    height: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    height: 100%;
+    align-content: start;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-weight: 500;
+    color: var(--heidelberg-blue);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="number"],
+select {
+    padding: 0.75rem;
+    border: 2px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+    background: white;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--heidelberg-blue);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+input:invalid {
+    border-color: var(--danger-red);
+}
+
+.field-hint {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Radio Groups */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: normal;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.radio-label input[type="radio"] {
+    margin: 0;
+}
+
+.radio-label span {
+    flex: 0 0 auto;
+}
+
+.radio-label input[type="text"] {
+    flex: 1;
+    margin-left: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    background: var(--medium-gray);
+    color: var(--dark-gray);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hover);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-primary {
+    background: var(--heidelberg-blue);
+    color: white;
+}
+
+.btn-secondary {
+    background: var(--medium-gray);
+    color: var(--dark-gray);
+}
+
+.btn-success {
+    background: var(--success-green);
+    color: white;
+}
+
+.btn-add {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--heidelberg-light-blue);
+    color: white;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-group {
+    position: relative;
+}
+
+/* Footer */
+.app-footer {
+    background: var(--light-gray);
+    border-top: 1px solid var(--medium-gray);
+    padding: 1.5rem 2rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hotfolder-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hotfolder-path {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    font-style: italic;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Icons */
+.icon {
+    font-size: 1.1rem;
+}
+
+/* Responsive Design für kleinere Desktop-Monitore */
+@media (max-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .app-container {
+        margin: 1rem;
+        min-height: calc(100vh - 2rem);
+    }
+}
