@@ -3,9 +3,829 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heidelberg PDF Renamer</title>
-    <link rel="stylesheet" href="assets/css/main.css">
-    <link rel="stylesheet" href="assets/css/components.css">
+    <title>Printex PDF-Automation</title>
+    <meta name="theme-color" content="#395045">
+    <link rel="icon" href="images/Icon.png" type="image/png">
+    <style>
+        /* Printex PDF Renamer - Main Styles */
+
+        /* CSS Reset und Basis */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Printex Farbschema */
+        :root {
+            --printex-primary: #395045;        /* Dunkelgrün */
+            --printex-secondary: #ebecec;      /* Hellgrau */
+            --printex-accent: #d0603f;         /* Orange/Rot */
+            --printex-dark: #2a3b32;          /* Dunkleres Grün */
+            --printex-light: #f5f6f6;         /* Noch helleres Grau */
+
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+            --info-blue: #17a2b8;
+
+            --light-gray: #f8f9fa;
+            --medium-gray: #dee2e6;
+            --dark-gray: #495057;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            min-height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .app-header {
+            background: var(--printex-primary);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-section img {
+            height: 40px;
+        }
+
+        .version {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            align-self: flex-end;
+            padding-bottom: 4px;
+            margin-left: 1rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        /* Left Panel */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* File Drop Zone */
+        .file-drop-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .file-drop-zone {
+            border: 3px dashed var(--medium-gray);
+            border-radius: var(--border-radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--light-gray);
+        }
+
+        .file-drop-zone:hover,
+        .file-drop-zone.drag-over {
+            border-color: var(--printex-accent);
+            background: rgba(208, 96, 63, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .drop-content {
+            pointer-events: none;
+        }
+
+        .drop-icon {
+            margin-bottom: 1rem;
+            color: var(--printex-accent);
+            height: 96px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .drop-icon img {
+            max-width: 100%;
+            max-height: 96px;
+            object-fit: contain;
+        }
+
+        .drop-content h3 {
+            color: var(--printex-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .drop-content p {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        /* File Preview */
+        .file-preview {
+            background: white;
+            padding: 1rem;
+            border: 2px solid var(--success-green);
+            animation: slideIn 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: var(--printex-primary);
+            margin-bottom: 0.25rem;
+            word-break: break-all;
+        }
+
+        .file-size {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+            font-size: 1.2rem;
+        }
+
+        .btn-remove:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Product Code Section */
+        .product-code-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .product-code-section h3 {
+            color: var(--printex-primary);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .code-preview {
+            background: #f8f9fa;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .code-preview.success {
+            border-color: var(--success-green);
+        }
+
+        #generatedCode {
+            word-break: break-all;
+            color: var(--printex-primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .code-explanation {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            font-style: italic;
+        }
+
+        /* Right Panel - Form */
+        .right-panel {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .rename-form {
+            height: 100%;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            height: 100%;
+            align-content: start;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--printex-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 0.75rem;
+            border: 2px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--printex-accent);
+            box-shadow: 0 0 0 3px rgba(208, 96, 63, 0.1);
+        }
+
+        input:invalid {
+            border-color: var(--danger-red);
+        }
+
+        .field-hint {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+
+        /* Radio Groups */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: normal;
+            cursor: pointer;
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        .radio-label input[type="radio"] {
+            margin: 0;
+            accent-color: var(--printex-accent);
+        }
+
+        .radio-label span {
+            flex: 0 0 auto;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            background: var(--medium-gray);
+            color: var(--dark-gray);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: var(--printex-primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--printex-secondary);
+            color: var(--printex-primary);
+            border: 1px solid var(--medium-gray);
+        }
+
+        .btn-secondary:hover {
+             background: var(--medium-gray);
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .form-group .btn-add {
+            position: absolute;
+            right: 3px;
+            top: 31px;
+            width: 38px;
+            height: 38px;
+            border-radius: var(--border-radius);
+            background: var(--printex-accent);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group .btn-add:hover {
+            background: var(--printex-primary);
+        }
+
+        /* Footer */
+        .app-footer {
+            background: var(--light-gray);
+            border-top: 1px solid var(--medium-gray);
+            padding: 1.5rem 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        /* Icons */
+        .icon {
+            font-size: 1.1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .app-container {
+                 margin: 1rem;
+                 min-height: calc(100vh - 2rem);
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+         @media (max-width: 768px) {
+            .app-container {
+                margin: 0;
+                border-radius: 0;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-content, .footer-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .action-buttons {
+                width: 100%;
+                flex-direction: column;
+                margin-left: 0;
+            }
+             .btn {
+                 width: 100%;
+             }
+        }
+
+        /* Printex PDF Renamer - Component Styles */
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideInModal 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--warning-orange);
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        @keyframes slideInModal {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+         @keyframes slideOutModal {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+        }
+
+        .modal-header {
+            background: var(--printex-primary);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-weight: 400;
+            font-size: 1.3rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            line-height: 1;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Settings Tabs */
+        .settings-tabs {
+            display: flex;
+            background: var(--light-gray);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--dark-gray);
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: white;
+            color: var(--printex-primary);
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--printex-primary);
+            border-bottom-color: var(--printex-accent);
+        }
+
+        .tab-content {
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 1.5rem;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .tab-pane h3 {
+            color: var(--printex-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            border-bottom: 2px solid var(--medium-gray);
+            padding-bottom: 0.5rem;
+        }
+
+        .config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--medium-gray);
+        }
+
+        .config-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .config-name {
+            font-weight: 500;
+            min-width: 150px;
+        }
+
+        .config-code {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .config-type {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .config-actions .btn {
+            padding: 0.5rem;
+            font-size: 1rem;
+            line-height: 1;
+            background: none;
+            border: none;
+        }
+
+        .config-actions .btn:hover {
+            background: #e9ecef;
+        }
+
+        .add-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            align-items: end;
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+        }
+
+        .add-form input, .add-form select {
+            width: 100%;
+        }
+
+        .add-form .btn {
+            grid-column: -1;
+            justify-self: end;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-left: 5px solid;
+            z-index: 2000;
+            transition: all 0.5s ease;
+        }
+
+        .notification.success { border-color: var(--success-green); }
+        .notification.error { border-color: var(--danger-red); }
+        .notification.warning { border-color: var(--warning-orange); }
+        .notification.info { border-color: var(--info-blue); }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-icon { margin-right: 0.5rem; }
+        .notification-title { flex: 1; }
+
+        .notification-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
+        /* Confirm Dialog */
+        .confirm-dialog-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+        }
+
+        .confirm-dialog {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-hover);
+        }
+        .confirm-dialog-header h3 { margin: 0 0 1rem 0; color: var(--printex-primary); }
+        .confirm-dialog-body p { margin: 0 0 1.5rem 0; }
+        .confirm-dialog-footer { display: flex; justify-content: flex-end; gap: 1rem; }
+
+        /* Hotfolder Settings */
+        .hotfolder-setting {
+            padding: 1rem;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+        .hotfolder-setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .hotfolder-setting-header h4 {
+            margin: 0;
+            color: var(--printex-primary);
+        }
+        .hotfolder-path-display {
+            font-style: italic;
+            color: var(--dark-gray);
+            background: #f8f9fa;
+            padding: 0.5rem;
+            border-radius: 4px;
+            min-height: 30px;
+        }
+
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -13,8 +833,8 @@
         <header class="app-header">
             <div class="header-content">
                 <div class="logo-section">
-                    <h1>Heidelberg PDF Renamer</h1>
-                    <span class="version">v1.0.0</span>
+                    <img src="images/Printex_Logo_Slogan_CMYK.png" alt="Printex Logo">
+                    <span class="version">v2.5.0</span>
                 </div>
                 <div class="header-actions">
                     <button id="settingsBtn" class="btn btn-secondary">
@@ -35,13 +855,15 @@
                     <div class="file-drop-section">
                         <div id="fileDropZone" class="file-drop-zone">
                             <div class="drop-content">
-                                <div class="drop-icon">📄</div>
+                                <div class="drop-icon">
+                                    <img src="images/DragDrop.png" alt="Drag and Drop Icon">
+                                </div>
                                 <h3>PDF hier hinziehen</h3>
                                 <p>oder klicken zum Auswählen</p>
                                 <input type="file" id="fileInput" accept=".pdf" style="display: none;">
                             </div>
                         </div>
-                        
+
                         <div id="filePreview" class="file-preview" style="display: none;">
                             <div class="preview-header">
                                 <span class="file-icon">📄</span>
@@ -49,7 +871,7 @@
                                     <div class="file-name" id="fileName"></div>
                                     <div class="file-size" id="fileSize"></div>
                                 </div>
-                                <button id="removeFile" class="btn-remove">❌</button>
+                                <button id="removeFile" class="btn-remove" title="Datei entfernen">❌</button>
                             </div>
                         </div>
                     </div>
@@ -67,7 +889,7 @@
 
                 <!-- Right Panel: Input Form -->
                 <div class="right-panel">
-                    <form id="pdfRenameForm" class="rename-form">
+                    <form id="pdfRenameForm" class="rename-form" novalidate>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="auftragsnummer">Auftragsnummer *</label>
@@ -77,12 +899,12 @@
 
                             <div class="form-group">
                                 <label for="kunde">Kunde *</label>
-                                <input type="text" id="kunde" name="kunde" placeholder="Firmenname" required>
+                                <input type="text" id="kunde" name="kunde" placeholder="Kundenname" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="auftragsposition">Auftragsposition *</label>
-                                <input type="number" id="auftragsposition" name="auftragsposition" placeholder="1" min="0" required>
+                                <input type="number" id="auftragsposition" name="auftragsposition" placeholder="1" min="1" required>
                             </div>
 
                             <div class="form-group">
@@ -90,7 +912,7 @@
                                 <select id="maschine" name="maschine" required>
                                     <option value="">Maschine wählen...</option>
                                 </select>
-                                <button type="button" class="btn-add" id="addMachine">+</button>
+                                <button type="button" class="btn-add" id="addMachine" title="Neue Maschine hinzufügen">+</button>
                             </div>
 
                             <div class="form-group">
@@ -104,12 +926,12 @@
                                 <select id="produkt" name="produkt" required>
                                     <option value="">Produkt wählen...</option>
                                 </select>
-                                <button type="button" class="btn-add" id="addProduct">+</button>
+                                <button type="button" class="btn-add" id="addProduct" title="Neues Produkt hinzufügen">+</button>
                             </div>
 
                             <div class="form-group">
                                 <label for="papierart">Papierart *</label>
-                                <div class="radio-group">
+                                <div class="radio-group" id="paperTypeGroup">
                                     <label class="radio-label">
                                         <input type="radio" name="papierart" value="gestrichen" id="gestrichenRadio">
                                         <span>Gestrichen</span>
@@ -118,11 +940,7 @@
                                         <input type="radio" name="papierart" value="ungestrichen" id="ungestrichenRadio">
                                         <span>Ungestrichen</span>
                                     </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="papierart" value="custom" id="customPaperRadio">
-                                        <span>Anderes:</span>
-                                        <input type="text" id="customPaperType" placeholder="Papierart..." disabled>
-                                    </label>
+                                    <!-- Custom paper type will be injected here -->
                                 </div>
                             </div>
 
@@ -131,7 +949,7 @@
                                 <select id="papiername" name="papiername" required>
                                     <option value="">Papier wählen...</option>
                                 </select>
-                                <button type="button" class="btn-add" id="addPaper">+</button>
+                                <button type="button" class="btn-add" id="addPaper" title="Neues Papier hinzufügen">+</button>
                             </div>
                         </div>
                     </form>
@@ -142,18 +960,15 @@
         <!-- Footer Actions -->
         <footer class="app-footer">
             <div class="footer-content">
-                <div class="hotfolder-section">
-                    <button id="selectHotfolder" class="btn btn-secondary">
-                        <span class="icon">📁</span> Hotfolder wählen
-                    </button>
-                    <span id="hotfolderPath" class="hotfolder-path">Kein Hotfolder gewählt</span>
-                </div>
                 <div class="action-buttons">
                     <button id="downloadBtn" class="btn btn-primary" disabled>
-                        <span class="icon">💾</span> PDF umbenennen & downloaden
+                        <span class="icon">💾</span> Download
                     </button>
-                    <button id="saveToHotfolderBtn" class="btn btn-success" disabled>
-                        <span class="icon">🚀</span> In Hotfolder speichern
+                    <button id="saveToNormalBtn" class="btn btn-success" disabled>
+                        <span class="icon">🚀</span> In Normal-Hotfolder
+                    </button>
+                     <button id="saveToGangingBtn" class="btn btn-success" disabled>
+                        <span class="icon">🚀</span> In Ganging-Hotfolder
                     </button>
                 </div>
             </div>
@@ -172,6 +987,7 @@
                     <button class="tab-btn active" data-tab="machines">Maschinen</button>
                     <button class="tab-btn" data-tab="products">Produkte</button>
                     <button class="tab-btn" data-tab="papers">Papiere</button>
+                    <button class="tab-btn" data-tab="hotfolder">Hotfolder</button>
                     <button class="tab-btn" data-tab="export">Export/Import</button>
                 </div>
                 <div class="tab-content">
@@ -195,6 +1011,7 @@
                     </div>
                     <div id="papersTab" class="tab-pane">
                         <h3>Papiere verwalten</h3>
+                        <p>Hier können Sie auch das "Spezialpapier" definieren.</p>
                         <div id="papersList" class="config-list"></div>
                         <div class="add-form">
                             <input type="text" id="newPaperName" placeholder="Papiername">
@@ -202,24 +1019,989 @@
                             <select id="newPaperType">
                                 <option value="gestrichen">Gestrichen</option>
                                 <option value="ungestrichen">Ungestrichen</option>
+                                <option value="special">Spezialpapier</option>
                             </select>
                             <button id="addPaperBtn" class="btn btn-primary">Hinzufügen</button>
                         </div>
                     </div>
+                    </div>
+                     <div id="hotfolderTab" class="tab-pane">
+                        <h3>Hotfolder verwalten</h3>
+                        <div class="hotfolder-setting">
+                            <div class="hotfolder-setting-header">
+                                <h4>Normaler Auftrag</h4>
+                                <button id="selectNormalHotfolder" class="btn btn-secondary">Ordner wählen</button>
+                            </div>
+                            <div id="normalHotfolderPath" class="hotfolder-path-display">Kein Ordner gewählt</div>
+                        </div>
+                         <div class="hotfolder-setting">
+                            <div class="hotfolder-setting-header">
+                                <h4>Sammelauftrag (Ganging)</h4>
+                                <button id="selectGangingHotfolder" class="btn btn-secondary">Ordner wählen</button>
+                            </div>
+                             <div id="gangingHotfolderPath" class="hotfolder-path-display">Kein Ordner gewählt</div>
+                        </div>
+                    </div>
                     <div id="exportTab" class="tab-pane">
                         <h3>Konfiguration Export/Import</h3>
-                        <div class="export-section">
+                        <p>Änderungen an den Einstellungen sind nur für die aktuelle Sitzung gültig. Um sie dauerhaft zu speichern, exportieren Sie die Konfiguration und integrieren Sie sie in die HTML-Datei (EMBEDDED_CONFIG Objekt).</p>
+                        <div class="export-section" style="margin-top: 1rem; display: flex; gap: 1rem;">
                             <button id="exportConfig" class="btn btn-secondary">Konfiguration exportieren</button>
-                            <button id="importConfig" class="btn btn-secondary">Konfiguration importieren</button>
+                            <button id="importConfig" class="btn btn-secondary">Temporär importieren</button>
                             <input type="file" id="importFile" accept=".json" style="display: none;">
                         </div>
                     </div>
                 </div>
             </div>
+             <div class="modal-footer" style="display: none;" id="settingsUnsavedWarning">
+                <span>⚠️ Änderungen sind nicht permanent.</span>
+                <button class="btn btn-primary" id="exportChangesBtn">Jetzt exportieren</button>
+            </div>
         </div>
     </div>
 
     <!-- JavaScript Module -->
-    <script type="module" src="assets/js/main.js"></script>
+    <script type="module">
+        // ===================================================================================
+        // ALL JAVASCRIPT IS NOW INLINE TO AVOID MODULE RESOLUTION ERRORS
+        // ===================================================================================
+
+        // --- constants.js ---
+        const APP_INFO = {
+            NAME: 'Heidelberg PDF Renamer',
+            VERSION: '2.5.0',
+        };
+        const FILE_CONSTANTS = {
+            MAX_FILE_SIZE: 100 * 1024 * 1024, // 100MB
+            INVALID_FILENAME_CHARS: /[/\\?%*:|"<>\x00-\x1f]/g,
+        };
+        const STORAGE_KEYS = {
+            DB_NAME: 'PrintexDB-v2',
+            DB_STORE_HANDLES: 'hotfolderHandles'
+        };
+        const CONFIG_CONSTANTS = {
+            VERSION: '2.5.0',
+        };
+
+        // --- Integrierte Konfiguration ---
+        const EMBEDDED_CONFIG = {
+            "version": "2.3.0",
+            "customPaper": {
+                "id": "specialPaper",
+                "name": "Spezialpapier",
+                "code": "special"
+            },
+            "machines": [
+                {
+                    "id": "machine_lkyf2y2n_x28l2h8zq",
+                    "name": "Speedmaster SM52-2",
+                    "code": "SM52"
+                },
+                {
+                    "id": "machine_lkyf2y2n_u7n4q7csa",
+                    "name": "Speedmaster SM52-5 p+l",
+                    "code": "SM52"
+                },
+                {
+                    "id": "machine_lkyf2y2o_84e9j4z5r",
+                    "name": "Speedmaster CX75 l (X0)",
+                    "code": "CX75"
+                }
+            ],
+            "products": [
+                {
+                    "id": "product_lkyf2y2o_i9y8b9xvr",
+                    "name": "Broschüre Rückstich",
+                    "code": "BR_R"
+                },
+                {
+                    "id": "product_lkyf2y2o_1h2g3f4d5",
+                    "name": "Flyer ungefalzt",
+                    "code": "FLY_U"
+                },
+                {
+                    "id": "product_lkyf2y2p_abc123def",
+                    "name": "Visitenkarte",
+                    "code": "VK"
+                }
+            ],
+            "papers": [
+                {
+                    "id": "paper_lkyf2y2p_qwe987rty",
+                    "name": "Novatech 170g",
+                    "code": "Nov170",
+                    "type": "gestrichen"
+                },
+                {
+                    "id": "paper_lkyf2y2p_poi098uyt",
+                    "name": "Image Impacht 90g",
+                    "code": "Im90",
+                    "type": "ungestrichen"
+                },
+                {
+                    "id": "paper_lkyf2y2q_mnb234vcx",
+                    "name": "Tintoretto",
+                    "code": "Tinto",
+                    "type": "special"
+                }
+            ]
+        };
+
+        // --- helpers.js ---
+        function generateUniqueId(prefix = 'id') {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 9);
+            return `${prefix}_${timestamp}_${random}`;
+        }
+
+        // --- IndexedDB Helper ---
+        const idb = {
+            openDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(STORAGE_KEYS.DB_NAME, 1);
+                    request.onerror = () => reject("IndexedDB konnte nicht geöffnet werden.");
+                    request.onsuccess = () => resolve(request.result);
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(STORAGE_KEYS.DB_STORE_HANDLES)) {
+                            db.createObjectStore(STORAGE_KEYS.DB_STORE_HANDLES);
+                        }
+                    };
+                });
+            },
+            async get(key) {
+                const db = await this.openDB();
+                return new Promise((resolve) => {
+                    const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readonly');
+                    const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
+                    const request = store.get(key);
+                    transaction.oncomplete = () => {
+                        resolve(request.result);
+                        db.close();
+                    };
+                });
+            },
+            async set(key, value) {
+                const db = await this.openDB();
+                return new Promise((resolve) => {
+                     const transaction = db.transaction(STORAGE_KEYS.DB_STORE_HANDLES, 'readwrite');
+                     const store = transaction.objectStore(STORAGE_KEYS.DB_STORE_HANDLES);
+                     store.put(value, key);
+                     transaction.oncomplete = () => {
+                         resolve();
+                         db.close();
+                     };
+                });
+            }
+        };
+
+
+        // --- configManager.js ---
+        class ConfigManager {
+            constructor() {
+                this.config = null;
+            }
+
+            _getDefaultConfig() {
+                return {
+                    version: CONFIG_CONSTANTS.VERSION,
+                    customPaper: { id: 'specialPaper', name: 'Spezialpapier', code: 'special' },
+                    machines: [
+                        { id: generateUniqueId('machine'), name: 'Speedmaster XL 106', code: 'XL106' },
+                        { id: generateUniqueId('machine'), name: 'Speedmaster CX 75', code: 'CX75' },
+                    ],
+                    products: [
+                        { id: generateUniqueId('product'), name: 'Broschüre Rückstich', code: 'BR_R' },
+                        { id: generateUniqueId('product'), name: 'Flyer ungefalzt', code: 'FLY_U' },
+                    ],
+                    papers: [
+                        { id: generateUniqueId('paper'), name: 'Satimat 170g', code: 'Sat170', type: 'gestrichen' },
+                        { id: generateUniqueId('paper'), name: 'PlanoJet 90g', code: 'Pla90', type: 'ungestrichen' },
+                        { id: generateUniqueId('paper'), name: 'Spezialpapier XYZ', code: 'SP_XYZ', type: 'special' },
+                    ]
+                };
+            }
+
+            async loadConfig() {
+                // Verwende die eingebettete Konfiguration direkt
+                this.config = { ...EMBEDDED_CONFIG };
+                console.log('Integrierte Konfiguration erfolgreich geladen.');
+                return { config: this.config, source: 'embedded' };
+            }
+
+            addItem(type, item) {
+                if (!this.config[type]) throw new Error('Ungültiger Konfigurationstyp');
+                const newItem = { ...item, id: generateUniqueId(type) };
+                this.config[type].push(newItem);
+                return this.config;
+            }
+
+            updateItem(type, id, updates) {
+                if (!this.config[type] && type !== 'customPaper') throw new Error('Ungültiger Konfigurationstyp');
+
+                if (type === 'customPaper') {
+                    this.config.customPaper = { ...this.config.customPaper, ...updates };
+                } else {
+                    const itemIndex = this.config[type].findIndex(i => i.id === id);
+                    if (itemIndex === -1) throw new Error('Eintrag nicht gefunden');
+                    this.config[type][itemIndex] = { ...this.config[type][itemIndex], ...updates };
+                }
+
+                return this.config;
+            }
+
+            deleteItem(type, id) {
+                if (!this.config[type]) throw new Error('Ungültiger Konfigurationstyp');
+                this.config[type] = this.config[type].filter(item => item.id !== id);
+                return this.config;
+            }
+
+            exportConfig() {
+                return JSON.stringify(this.config, null, 2);
+            }
+
+            importConfig(jsonString) {
+                try {
+                    const newConfig = JSON.parse(jsonString);
+                    if (!newConfig.version || !newConfig.machines || !newConfig.products || !newConfig.papers) {
+                        throw new Error('Ungültige Konfigurationsdatei. Erforderliche Felder fehlen.');
+                    }
+                    this.config = newConfig;
+                    return newConfig;
+                } catch (error) {
+                     throw new Error(`Importfehler: ${error.message}`);
+                }
+            }
+        }
+
+        // --- fileHandler.js ---
+        class FileHandler {
+            async downloadFile(file, newFileName) {
+                try {
+                    const blob = new Blob([file], { type: file.type });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = newFileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
+                    return { success: true, fileName: newFileName };
+                } catch (error) {
+                    console.error('Download-Fehler:', error);
+                    throw new Error(`Download fehlgeschlagen: ${error.message}`);
+                }
+            }
+        }
+
+        // --- productCode.js ---
+        class ProductCodeGenerator {
+             generate(formData, config) {
+                try {
+                    if (!this.validateInput(formData)) {
+                        return '';
+                    }
+
+                    const parts = this.buildCodeParts(formData, config);
+                    return this.assembleCode(parts);
+
+                } catch (error) {
+                    console.error('Fehler bei Produktcode-Generierung:', error);
+                    return '';
+                }
+            }
+
+            validateInput(formData) {
+                const requiredFields = [
+                    'auftragsnummer', 'kunde', 'auftragsposition',
+                    'maschine', 'auflage', 'produkt', 'papierart', 'papiername'
+                ];
+
+                if (!formData['papierart']) return false;
+
+                return requiredFields.every(field => {
+                    const value = formData[field];
+                    return value && value.toString().trim() !== '';
+                });
+            }
+
+            buildCodeParts(formData, config) {
+                return {
+                    auftragsTeil: this.buildAuftragsTeil(formData),
+                    kundenTeil: this.buildKundenTeil(formData, config),
+                    maschineTeil: this.buildMaschineTeil(formData, config),
+                    auflageTeil: this.buildAuflageTeil(formData),
+                    papierTeil: this.buildPapierTeil(formData, config)
+                };
+            }
+
+            buildAuftragsTeil(formData) {
+                const auftragsnummer = formData.auftragsnummer.trim().toUpperCase();
+                const position = formData.auftragsposition.toString().trim();
+                const cleanAuftrag = auftragsnummer.startsWith('A') ? auftragsnummer : `A${auftragsnummer}`;
+                return `${cleanAuftrag}-${position}`;
+            }
+
+            buildKundenTeil(formData, config) {
+                const kunde = this.sanitizeText(formData.kunde);
+                const produktCode = this.getProduktCode(formData.produkt, config);
+                return `${kunde}-${produktCode}`;
+            }
+
+            buildMaschineTeil(formData, config) {
+                const maschinenCode = formData.maschine;
+                const papierartCode = this.getPapierartCode(formData.papierart, config);
+                const papiernameCode = this.getPapierCode(formData.papiername, config);
+                return `${maschinenCode}_${papierartCode}_${papiernameCode}`;
+            }
+
+            buildAuflageTeil(formData) {
+                const auflageStr = formData.auflage.toString().replace(/'/g, '').replace(/\s/g, '');
+                const auflageNum = parseInt(auflageStr, 10);
+                if (isNaN(auflageNum)) throw new Error('Ungültige Auflage');
+                return auflageNum.toString();
+            }
+
+            buildPapierTeil(formData, config) {
+                const papiernameCode = this.getPapierCode(formData.papiername, config);
+                return `D-${papiernameCode}`;
+            }
+
+            assembleCode(parts) {
+                return [
+                    parts.auftragsTeil,
+                    parts.kundenTeil,
+                    parts.maschineTeil,
+                    parts.auflageTeil,
+                    parts.papierTeil
+                ].join('#') + '#';
+            }
+
+            getProduktCode(produktValue, config) {
+                const produkt = config.products?.find(p => p.code === produktValue);
+                return produkt ? produkt.code : produktValue;
+            }
+
+            getPapierCode(papierValue, config) {
+                const papier = config.papers?.find(p => p.code === papierValue);
+                return papier ? papier.code : papierValue;
+            }
+
+            getPapierartCode(papierart, config) {
+                const typeMap = {
+                    'gestrichen': 'g_s',
+                    'ungestrichen': 'u_s',
+                    [config.customPaper.code]: config.customPaper.code
+                };
+                if (typeMap[papierart]) return typeMap[papierart];
+                return `${papierart.charAt(0).toLowerCase()}_s`;
+            }
+
+            sanitizeText(text) {
+                return text
+                    .trim()
+                    .replace(FILE_CONSTANTS.INVALID_FILENAME_CHARS, '')
+                    .replace(/\s+/g, '-')
+                    .substring(0, 20);
+            }
+        }
+
+        // --- hotfolderAPI.js ---
+        class HotfolderAPI {
+            constructor() {
+                this.isSupported = 'showDirectoryPicker' in window;
+            }
+
+            async selectHotfolder() {
+                if (!this.isSupported) throw new Error('File System Access API wird nicht unterstützt.');
+                try {
+                    const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite'});
+                    return dirHandle;
+                } catch (error) {
+                    if (error.name === 'AbortError') return null;
+                    throw new Error(`Hotfolder konnte nicht ausgewählt werden: ${error.message}`);
+                }
+            }
+
+            async verifyPermission(dirHandle) {
+                if (!dirHandle) return false;
+                const options = { mode: 'readwrite' };
+                if (await dirHandle.queryPermission(options) === 'granted') return true;
+                if (await dirHandle.requestPermission(options) === 'granted') return true;
+                return false;
+            }
+
+            async saveToHotfolder(dirHandle, file, fileName) {
+                if (!dirHandle) throw new Error('Kein Hotfolder ausgewählt');
+
+                const hasPermission = await this.verifyPermission(dirHandle);
+                if (!hasPermission) {
+                    throw new Error('Keine Berechtigung für den Hotfolder. Bitte neu auswählen.');
+                }
+
+                const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(file);
+                await writable.close();
+                return true;
+            }
+        }
+
+        // --- validation.js ---
+        class Validator {
+            validateFile(file) {
+                if (!file) return { valid: false, error: 'Keine Datei ausgewählt' };
+                if (file.type !== 'application/pdf') return { valid: false, error: 'Nur PDF-Dateien sind erlaubt' };
+                if (file.size > 100 * 1024 * 1024) return { valid: false, error: 'Datei ist zu gross (max. 100MB)' };
+                return { valid: true };
+            }
+
+            validateField(fieldName, value) {
+                if (!value || !value.trim()) {
+                     return { valid: false, error: 'Feld darf nicht leer sein' };
+                }
+                if (fieldName === 'auftragsnummer' && !/^A\d+$/i.test(value)) {
+                    return { valid: false, error: 'Muss mit A beginnen, gefolgt von Zahlen' };
+                }
+                return { valid: true };
+            }
+        }
+
+        // --- ui.js ---
+        class UIManager {
+            constructor() {
+                this.settingsModal = document.getElementById('settingsModal');
+                this.closeSettingsBtn = document.getElementById('closeSettings');
+                this.tabButtons = document.querySelectorAll('.tab-btn');
+                this.tabPanes = document.querySelectorAll('.tab-pane');
+                this.unsavedWarning = document.getElementById('settingsUnsavedWarning');
+
+                this.setupEventListeners();
+            }
+
+            setupEventListeners() {
+                this.closeSettingsBtn.addEventListener('click', () => this.closeModal('settingsModal'));
+                this.settingsModal.addEventListener('click', (e) => {
+                    if (e.target === this.settingsModal) {
+                         this.closeModal('settingsModal');
+                    }
+                });
+                 this.tabButtons.forEach(btn => {
+                    btn.addEventListener('click', () => this.switchTab(btn.dataset.tab));
+                });
+            }
+
+            showNotification(type, title, message, duration = 4000) {
+                const notifId = `notif_${Date.now()}`;
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.id = notifId;
+
+                const iconMap = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+
+                notification.innerHTML = `
+                    <div class="notification-header">
+                        <span class="notification-icon">${iconMap[type] || 'ℹ️'}</span>
+                        <span class="notification-title">${title}</span>
+                        <button class="notification-close">&times;</button>
+                    </div>
+                    <div class="notification-message">${message}</div>
+                `;
+
+                document.body.appendChild(notification);
+
+                const closeBtn = notification.querySelector('.notification-close');
+                const timer = setTimeout(() => this.removeNotification(notifId), duration);
+
+                closeBtn.addEventListener('click', () => {
+                    clearTimeout(timer);
+                    this.removeNotification(notifId);
+                });
+            }
+
+            showUnsavedChangesWarning(show) {
+                this.unsavedWarning.style.display = show ? 'flex' : 'none';
+            }
+
+            removeNotification(id) {
+                const notif = document.getElementById(id);
+                if (notif) {
+                    notif.style.animation = 'fadeOut 0.5s forwards';
+                    notif.addEventListener('animationend', () => notif.remove());
+                }
+            }
+
+            openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                     modal.style.display = 'flex';
+                     modal.querySelector('.modal-content').style.animation = 'slideInModal 0.3s forwards';
+                }
+            }
+
+            closeModal(modalId) {
+                 const modal = document.getElementById(modalId);
+                 if (modal) {
+                    const content = modal.querySelector('.modal-content');
+                    content.style.animation = 'slideOutModal 0.3s forwards';
+                    content.addEventListener('animationend', () => {
+                       modal.style.display = 'none';
+                       content.style.animation = '';
+                    }, { once: true });
+                 }
+            }
+
+            switchTab(tabName) {
+                this.tabButtons.forEach(btn => btn.classList.remove('active'));
+                this.tabPanes.forEach(pane => pane.classList.remove('active'));
+
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                document.getElementById(`${tabName}Tab`).classList.add('active');
+            }
+
+             showConfirmDialog(title, message, onConfirm, onCancel = () => {}) {
+                const dialogId = `confirm-${Date.now()}`;
+                const overlay = document.createElement('div');
+                overlay.className = 'confirm-dialog-overlay';
+                overlay.id = dialogId;
+
+                overlay.innerHTML = `
+                    <div class="confirm-dialog">
+                        <div class="confirm-dialog-header"><h3>${title}</h3></div>
+                        <div class="confirm-dialog-body"><p>${message}</p></div>
+                        <div class="confirm-dialog-footer">
+                            <button class="btn btn-secondary cancel-btn">Abbrechen</button>
+                            <button class="btn btn-primary confirm-btn">Bestätigen</button>
+                        </div>
+                    </div>
+                `;
+
+                document.body.appendChild(overlay);
+
+                const cleanup = () => overlay.remove();
+
+                overlay.querySelector('.confirm-btn').onclick = () => {
+                    cleanup();
+                    onConfirm();
+                };
+                overlay.querySelector('.cancel-btn').onclick = () => {
+                    cleanup();
+                    onCancel();
+                };
+            }
+        }
+
+        // --- main.js ---
+        class HeidelbergPDFRenamer {
+            constructor() {
+                this.currentFile = null;
+                this.config = null;
+                this.hotfolderNormalHandle = null;
+                this.hotfolderGangingHandle = null;
+
+                this.fileHandler = new FileHandler();
+                this.productCodeGenerator = new ProductCodeGenerator();
+                this.configManager = new ConfigManager();
+                this.hotfolderAPI = new HotfolderAPI();
+                this.validator = new Validator();
+                this.uiManager = new UIManager();
+
+                this.init();
+            }
+
+            async init() {
+                console.log('Printex PDF-Automation wird initialisiert...');
+                await this.loadConfiguration();
+                await this.loadHotfolders();
+                this.setupEventListeners();
+                this.updateUIState();
+            }
+
+            async loadConfiguration() {
+                const { config, source } = await this.configManager.loadConfig();
+                this.config = config;
+
+                // Positive Meldung für die integrierte Konfiguration
+                this.uiManager.showNotification('success', 'Konfiguration', 'Einstellungen erfolgreich geladen.', 4000);
+
+                this.populateDropdowns();
+                this.updatePaperTypeUI();
+                this.uiManager.showUnsavedChangesWarning(false);
+            }
+
+            async loadHotfolders() {
+                this.hotfolderNormalHandle = await idb.get('hotfolder-normal');
+                this.hotfolderGangingHandle = await idb.get('hotfolder-ganging');
+
+                if(this.hotfolderNormalHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderNormalHandle))) {
+                    this.hotfolderNormalHandle = null;
+                    idb.set('hotfolder-normal', null);
+                    this.uiManager.showNotification('warning', 'Hotfolder-Berechtigung', 'Berechtigung für Normal-Hotfolder abgelaufen. Bitte neu auswählen.');
+                }
+                if(this.hotfolderGangingHandle && !(await this.hotfolderAPI.verifyPermission(this.hotfolderGangingHandle))) {
+                    this.hotfolderGangingHandle = null;
+                    idb.set('hotfolder-ganging', null);
+                    this.uiManager.showNotification('warning', 'Hotfolder-Berechtigung', 'Berechtigung für Ganging-Hotfolder abgelaufen. Bitte neu auswählen.');
+                }
+
+                this.updateHotfolderUI();
+            }
+
+            populateDropdowns() {
+                const populate = (id, items) => {
+                    const select = document.getElementById(id);
+                    const currentValue = select.value;
+                    select.innerHTML = `<option value="">-- Bitte wählen --</option>`;
+                    items.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.code;
+                        option.textContent = `${item.name} (${item.code})`;
+                        select.appendChild(option);
+                    });
+                    if (Array.from(select.options).some(opt => opt.value === currentValue)) {
+                         select.value = currentValue;
+                    }
+                };
+
+                populate('maschine', this.config.machines);
+                populate('produkt', this.config.products);
+
+                const paperSelect = document.getElementById('papiername');
+                const selectedPaperTypeRadio = document.querySelector('input[name="papierart"]:checked');
+                const selectedPaperType = selectedPaperTypeRadio ? selectedPaperTypeRadio.value : 'gestrichen';
+
+                let papersToShow = [];
+                const typeToFilter = selectedPaperType === this.config.customPaper.code ? 'special' : selectedPaperType;
+                papersToShow = this.config.papers.filter(p => p.type === typeToFilter);
+                populate('papiername', papersToShow);
+            }
+
+            updatePaperTypeUI() {
+                const group = document.getElementById('paperTypeGroup');
+                const existingCustom = group.querySelector('#customPaperRadioLabel');
+                if(existingCustom) existingCustom.remove();
+
+                const customPaper = this.config.customPaper;
+                const label = document.createElement('label');
+                label.className = 'radio-label';
+                label.id = 'customPaperRadioLabel';
+                label.innerHTML = `
+                    <input type="radio" name="papierart" value="${customPaper.code}" id="customPaperRadio">
+                    <span>${customPaper.name}</span>
+                `;
+                group.appendChild(label);
+            }
+
+            getFormData() {
+                const form = document.getElementById('pdfRenameForm');
+                const formData = new FormData(form);
+                const data = {};
+                for(const [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                return data;
+            }
+
+            isFormValid(formData) {
+                 return this.productCodeGenerator.validateInput(formData);
+            }
+
+            updateProductCode() {
+                const formData = this.getFormData();
+                const productCode = this.productCodeGenerator.generate(formData, this.config);
+                const codeElement = document.getElementById('generatedCode');
+                const codePreview = document.getElementById('productCodePreview');
+
+                if (productCode && this.isFormValid(formData)) {
+                    codeElement.textContent = productCode;
+                    codePreview.classList.add('success');
+                } else {
+                    codeElement.textContent = 'Bitte alle Felder ausfüllen...';
+                    codePreview.classList.remove('success');
+                }
+                this.updateUIState();
+            }
+
+            setupEventListeners() {
+                const fileDropZone = document.getElementById('fileDropZone');
+                const fileInput = document.getElementById('fileInput');
+                fileDropZone.addEventListener('click', () => fileInput.click());
+                ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    fileDropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (eventName === 'dragover') fileDropZone.classList.add('drag-over');
+                        if (eventName === 'dragleave' || eventName === 'drop') fileDropZone.classList.remove('drag-over');
+                        if (eventName === 'drop') this.processFile(e.dataTransfer.files[0]);
+                    });
+                });
+                fileInput.addEventListener('change', (e) => this.processFile(e.target.files[0]));
+                document.getElementById('removeFile').addEventListener('click', () => this.removeFile());
+
+                document.getElementById('pdfRenameForm').addEventListener('input', (e) => {
+                    if (e.target.name === 'papierart') {
+                       this.populateDropdowns();
+                    }
+                    this.updateProductCode();
+                });
+
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadRenamedFile());
+                document.getElementById('saveToNormalBtn').addEventListener('click', () => this.saveToHotfolder('normal'));
+                document.getElementById('saveToGangingBtn').addEventListener('click', () => this.saveToHotfolder('ganging'));
+
+                document.getElementById('settingsBtn').addEventListener('click', () => {
+                    this.populateSettingsLists();
+                    this.uiManager.openModal('settingsModal');
+                });
+                document.getElementById('helpBtn').addEventListener('click', () => {
+                    this.uiManager.showNotification('info', 'Hilfe', 'Ziehen Sie eine PDF-Datei in die Box und füllen Sie alle Formularfelder aus, um den Dateinamen zu generieren.', 8000);
+                });
+
+                document.getElementById('settingsModal').addEventListener('click', (e) => {
+                    const button = e.target.closest('button');
+                    if (!button) return;
+                    const { type, id } = button.dataset;
+                    if (button.classList.contains('btn-delete')) this.deleteConfigItem(type, id);
+                    if (button.classList.contains('btn-edit')) this.editConfigItem(type, id);
+                });
+
+                document.getElementById('addMachineBtn').addEventListener('click', () => this.addConfigItem('machines', { name: document.getElementById('newMachineName').value, code: document.getElementById('newMachineCode').value }));
+                document.getElementById('addProductBtn').addEventListener('click', () => this.addConfigItem('products', { name: document.getElementById('newProductName').value, code: document.getElementById('newProductCode').value }));
+                document.getElementById('addPaperBtn').addEventListener('click', () => this.addConfigItem('papers', { name: document.getElementById('newPaperName').value, code: document.getElementById('newPaperCode').value, type: document.getElementById('newPaperType').value }));
+
+                document.getElementById('exportConfig').addEventListener('click', () => this.exportConfiguration());
+                document.getElementById('exportChangesBtn').addEventListener('click', () => this.exportConfiguration());
+                document.getElementById('importConfig').addEventListener('click', () => document.getElementById('importFile').click());
+                document.getElementById('importFile').addEventListener('change', (e) => this.importConfiguration(e.target.files[0]));
+
+                document.getElementById('selectNormalHotfolder').addEventListener('click', () => this.selectAndSaveHotfolder('normal'));
+                document.getElementById('selectGangingHotfolder').addEventListener('click', () => this.selectAndSaveHotfolder('ganging'));
+
+                document.getElementById('addMachine').addEventListener('click', () => {this.uiManager.switchTab('machines'); this.uiManager.openModal('settingsModal')});
+                document.getElementById('addProduct').addEventListener('click', () => {this.uiManager.switchTab('products'); this.uiManager.openModal('settingsModal')});
+                document.getElementById('addPaper').addEventListener('click', () => {this.uiManager.switchTab('papers'); this.uiManager.openModal('settingsModal')});
+            }
+
+            processFile(file) {
+                const validation = this.validator.validateFile(file);
+                if (!validation.valid) {
+                    this.uiManager.showNotification('error', 'Ungültige Datei', validation.error);
+                    return;
+                }
+                this.currentFile = file;
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileSize').textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                document.getElementById('fileDropZone').style.display = 'none';
+                document.getElementById('filePreview').style.display = 'block';
+                this.updateUIState();
+            }
+
+            removeFile() {
+                this.currentFile = null;
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileDropZone').style.display = 'block';
+                document.getElementById('filePreview').style.display = 'none';
+                this.updateUIState();
+            }
+
+            updateUIState() {
+                const hasFile = !!this.currentFile;
+                const formValid = this.isFormValid(this.getFormData());
+
+                document.getElementById('downloadBtn').disabled = !hasFile || !formValid;
+                document.getElementById('saveToNormalBtn').disabled = !hasFile || !formValid || !this.hotfolderNormalHandle;
+                document.getElementById('saveToGangingBtn').disabled = !hasFile || !formValid || !this.hotfolderGangingHandle;
+            }
+
+            async downloadRenamedFile() {
+                if(document.getElementById('downloadBtn').disabled) return;
+                const newFileName = `${document.getElementById('generatedCode').textContent}${this.currentFile.name}`;
+                try {
+                    await this.fileHandler.downloadFile(this.currentFile, newFileName);
+                    this.uiManager.showNotification('success', 'Download', 'Datei wurde umbenannt und heruntergeladen.');
+                } catch (error) {
+                    this.uiManager.showNotification('error', 'Fehler', error.message);
+                }
+            }
+
+            async saveToHotfolder(type) {
+                const handle = type === 'normal' ? this.hotfolderNormalHandle : this.hotfolderGangingHandle;
+                const button = type === 'normal' ? document.getElementById('saveToNormalBtn') : document.getElementById('saveToGangingBtn');
+                if(button.disabled) return;
+
+                const newFileName = `${document.getElementById('generatedCode').textContent}${this.currentFile.name}`;
+                 try {
+                    await this.hotfolderAPI.saveToHotfolder(handle, this.currentFile, newFileName);
+                    this.uiManager.showNotification('success', 'Gespeichert', `Datei im ${type}-Hotfolder abgelegt.`);
+                 } catch(error) {
+                    this.uiManager.showNotification('error', 'Hotfolder Fehler', error.message);
+                    if (error.message.includes("Berechtigung")) {
+                         this.loadHotfolders();
+                    }
+                 }
+            }
+
+            async selectAndSaveHotfolder(type) {
+                try {
+                    const handle = await this.hotfolderAPI.selectHotfolder();
+                    if (handle) {
+                        const key = `hotfolder-${type}`;
+                        await idb.set(key, handle);
+                        if (type === 'normal') {
+                            this.hotfolderNormalHandle = handle;
+                        } else {
+                            this.hotfolderGangingHandle = handle;
+                        }
+                        this.uiManager.showNotification('success', 'Hotfolder gespeichert', `Der ${type}-Hotfolder wurde gespeichert.`);
+                        this.updateHotfolderUI();
+                        this.updateUIState();
+                    }
+                } catch (error) {
+                    this.uiManager.showNotification('error', 'Fehler', error.message);
+                }
+            }
+
+            updateHotfolderUI() {
+                document.getElementById('normalHotfolderPath').textContent = this.hotfolderNormalHandle?.name || 'Kein Ordner gewählt';
+                document.getElementById('gangingHotfolderPath').textContent = this.hotfolderGangingHandle?.name || 'Kein Ordner gewählt';
+            }
+
+            populateSettingsLists() {
+                 const populateList = (type, items) => {
+                    const container = document.getElementById(`${type}List`);
+                    container.innerHTML = '';
+
+                    if (type === 'papers') {
+                        const customPaper = this.config.customPaper;
+                        const customItemEl = this.createConfigItemElement('customPaper', customPaper, true);
+                        container.appendChild(customItemEl);
+                    }
+
+                    items.forEach(item => {
+                         const itemEl = this.createConfigItemElement(type, item);
+                         container.appendChild(itemEl);
+                    });
+                };
+                populateList('machines', this.config.machines);
+                populateList('products', this.config.products);
+                populateList('papers', this.config.papers);
+            }
+
+            createConfigItemElement(type, item, isCustom = false) {
+                 const itemEl = document.createElement('div');
+                itemEl.className = 'config-item';
+                itemEl.innerHTML = `
+                    <div class="config-item-info">
+                        <span class="config-name">${item.name} ${isCustom ? '(Spezial)' : ''}</span>
+                        <span class="config-code">${item.code}</span>
+                        ${item.type && item.type !== 'special' ? `<span class="config-type">${item.type}</span>` : ''}
+                    </div>
+                    <div class="config-actions">
+                        <button class="btn btn-edit" data-type="${isCustom ? 'customPaper' : type}" data-id="${item.id}" title="Bearbeiten">✏️</button>
+                        ${!isCustom ? `<button class="btn btn-delete" data-type="${type}" data-id="${item.id}" title="Löschen">🗑️</button>` : ''}
+                    </div>
+                `;
+                return itemEl;
+            }
+
+            addConfigItem(type, itemData) {
+                if (!itemData.name || !itemData.code) {
+                    this.uiManager.showNotification('error', 'Fehler', 'Name und Code sind erforderlich.');
+                    return;
+                }
+                this.config = this.configManager.addItem(type, itemData);
+                this.uiManager.showUnsavedChangesWarning(true);
+                this.populateSettingsLists();
+                this.populateDropdowns();
+                const form = document.querySelector(`#${type}Tab .add-form`);
+                if(form) form.querySelectorAll('input[type="text"]').forEach(i => i.value = '');
+            }
+
+            editConfigItem(type, id) {
+                const isCustom = type === 'customPaper';
+                const item = isCustom ? this.config.customPaper : this.config[type].find(i => i.id === id);
+                if (!item) return;
+
+                const newName = prompt(`Neuer Name für "${item.name}":`, item.name);
+                if (newName === null) return;
+
+                const newCode = prompt(`Neuer Code für "${item.code}":`, item.code);
+                if (newCode === null) return;
+
+                const updates = { name: newName.trim(), code: newCode.trim() };
+
+                if (item.type !== undefined && !isCustom) {
+                    const newType = prompt(`Neuer Typ für "${item.type}" (gestrichen/ungestrichen/special):`, item.type);
+                    if (newType && ['gestrichen', 'ungestrichen', 'special'].includes(newType.trim())) {
+                         updates.type = newType.trim();
+                    }
+                }
+
+                this.config = this.configManager.updateItem(type, id, updates);
+                this.uiManager.showUnsavedChangesWarning(true);
+                this.populateSettingsLists();
+                this.populateDropdowns();
+                if (isCustom) this.updatePaperTypeUI();
+            }
+
+            deleteConfigItem(type, id) {
+                const item = this.config[type].find(i => i.id === id);
+                if (!item) return;
+
+                this.uiManager.showConfirmDialog(
+                    'Löschen bestätigen',
+                    `Möchten Sie "${item.name}" wirklich löschen?`,
+                     () => {
+                        this.config = this.configManager.deleteItem(type, id);
+                        this.uiManager.showUnsavedChangesWarning(true);
+                        this.populateSettingsLists();
+                        this.populateDropdowns();
+                    }
+                );
+            }
+
+            exportConfiguration() {
+                try {
+                    const json = this.configManager.exportConfig();
+                    const blob = new Blob([json], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `config.json`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    this.uiManager.showNotification('success', 'Export', 'config.json wurde heruntergeladen. Integrieren Sie die Konfiguration in das EMBEDDED_CONFIG Objekt der HTML-Datei.');
+                    this.uiManager.showUnsavedChangesWarning(false);
+                } catch(e) {
+                     this.uiManager.showNotification('error', 'Exportfehler', e.message);
+                }
+            }
+
+            importConfiguration(file) {
+                if (!file) return;
+                 try {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.config = this.configManager.importConfig(e.target.result);
+                        this.populateSettingsLists();
+                        this.populateDropdowns();
+                        this.updatePaperTypeUI();
+                        this.uiManager.showNotification('success', 'Import', 'Konfiguration erfolgreich importiert.');
+                        this.uiManager.showUnsavedChangesWarning(true);
+                    };
+                    reader.readAsText(file);
+                 } catch(e) {
+                     this.uiManager.showNotification('error', 'Importfehler', e.message);
+                 }
+            }
+        }
+
+        // Start application
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new HeidelbergPDFRenamer();
+        });
+
+    </script>
 </body>
 </html>

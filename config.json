@@ -1,0 +1,62 @@
+{
+  "version": "2.3.0",
+  "customPaper": {
+    "id": "specialPaper",
+    "name": "Spezialpapier",
+    "code": "special"
+  },
+  "machines": [
+    {
+      "id": "machine_lkyf2y2n_x28l2h8zq",
+      "name": "Speedmaster SM52-2",
+      "code": "SM52"
+    },
+    {
+      "id": "machine_lkyf2y2n_u7n4q7csa",
+      "name": "Speedmaster SM52-5 p+l",
+      "code": "SM52"
+    },
+    {
+      "name": "Speedmaster CX75-5 l (X0)",
+      "code": "CX75",
+      "id": "machines_mc0kob99_ea5rol6ls"
+    }
+  ],
+  "products": [
+    {
+      "id": "product_lkyf2y2o_i9y8b9xvr",
+      "name": "Broschüre Rückstich",
+      "code": "BR_R"
+    },
+    {
+      "id": "product_lkyf2y2o_1h2g3f4d5",
+      "name": "Flyer ungefalzt",
+      "code": "FLY_U"
+    },
+    {
+      "id": "product_lkyf2y2p_abc123def",
+      "name": "Visitenkarte",
+      "code": "VK"
+    }
+  ],
+  "papers": [
+    {
+      "id": "paper_lkyf2y2p_qwe987rty",
+      "name": "Novatech Satin 170g/m2",
+      "code": "nov170",
+      "type": "gestrichen"
+    },
+    {
+      "id": "paper_lkyf2y2p_poi098uyt",
+      "name": "Superset 120g/m2",
+      "code": "Sup120",
+      "type": "ungestrichen"
+    },
+    {
+      "id": "paper_lkyf2y2q_mnb234vcx",
+      "name": "Spezialpapier XYZ",
+      "code": "SP_XYZ",
+      "type": "special"
+    }
+  ]
+}
