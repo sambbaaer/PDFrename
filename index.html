@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Printex PDF-Automation</title>
+    <title>Printex PDF-Automation v3.0</title>
+
     <meta name="theme-color" content="#395045">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Printex PDF">
+    <link rel="apple-touch-icon" href="images/Icon.png">
     <link rel="icon" href="images/Icon.png" type="image/png">
+
     <style>
         /* Printex PDF Renamer - Main Styles */
-
-        /* CSS Reset und Basis */
         * {
             margin: 0;
             padding: 0;
@@ -27,19 +32,16 @@
             transition: all 0.3s ease;
         }
 
-        /* Printex Farbschema */
         :root {
-            --printex-primary: #395045;        /* Dunkelgrün */
-            --printex-secondary: #ebecec;      /* Hellgrau */
-            --printex-accent: #d0603f;         /* Orange/Rot */
-            --printex-dark: #2a3b32;          /* Dunkleres Grün */
-            --printex-light: #f5f6f6;         /* Noch helleres Grau */
-
+            --printex-primary: #395045;
+            --printex-secondary: #ebecec;
+            --printex-accent: #d0603f;
+            --printex-dark: #2a3b32;
+            --printex-light: #f5f6f6;
             --success-green: #28a745;
             --warning-orange: #ffc107;
             --danger-red: #dc3545;
             --info-blue: #17a2b8;
-
             --light-gray: #f8f9fa;
             --medium-gray: #dee2e6;
             --dark-gray: #495057;
@@ -48,9 +50,8 @@
             --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
 
-        /* App Container */
         .app-container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 2rem auto;
             min-height: calc(100vh - 4rem);
             display: flex;
@@ -110,7 +111,7 @@
 
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
+            grid-template-columns: 1fr 1fr 1.2fr;
             gap: 2rem;
             height: 100%;
         }
@@ -120,6 +121,241 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
+        }
+
+        /* Middle Panel - JDF Jobs */
+        .middle-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .jdf-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .jdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 2px solid var(--medium-gray);
+        }
+
+        .jdf-header h3 {
+            color: var(--printex-primary);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .jdf-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .jdf-controls .btn {
+            padding: 0.5rem;
+            min-width: 40px;
+        }
+
+        .folder-info {
+            padding: 1rem 1.5rem;
+            background: var(--light-gray);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .folder-path {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .folder-path span {
+            font-weight: 500;
+            color: var(--printex-primary);
+        }
+
+        .folder-path small {
+            color: var(--dark-gray);
+            font-style: italic;
+        }
+
+        .jdf-jobs-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .no-folder-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 2rem;
+            text-align: center;
+            color: var(--dark-gray);
+        }
+
+        .no-folder-message .message-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-folder-message h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--printex-primary);
+        }
+
+        .no-folder-message p {
+            margin: 0 0 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        /* JDF Job Items */
+        .jdf-job-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .jdf-job-item:hover {
+            background: var(--light-gray);
+        }
+
+        .jdf-job-item.selected {
+            background: #e7f3ff;
+            border-left: 4px solid var(--printex-primary);
+        }
+
+        .jdf-job-item:last-child {
+            border-bottom: none;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-info {
+            flex: 1;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: var(--printex-primary);
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+
+        .job-customer {
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .job-details {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+        }
+
+        .job-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .use-job-btn {
+            background: var(--success-green);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .use-job-btn:hover {
+            background: var(--printex-primary);
+            transform: translateY(-1px);
+        }
+
+        .delete-jdf-btn {
+            background: var(--danger-red);
+            color: white;
+            border: none;
+            padding: 0.4rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+        }
+
+        .delete-jdf-btn:hover {
+            background: #b02a37;
+            transform: translateY(-1px);
+        }
+
+        .job-from-jdf {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--info-blue);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        /* Loading State */
+        .jdf-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            color: var(--dark-gray);
+        }
+
+        .jdf-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--printex-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* File Drop Zone */
@@ -179,6 +415,14 @@
             font-size: 0.9rem;
         }
 
+        /* Multi-File Drop Zone (erweitert) */
+        .multi-drop-hint {
+            font-size: 0.8rem;
+            color: var(--info-blue);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
         /* File Preview */
         .file-preview {
             background: white;
@@ -231,6 +475,35 @@
 
         .btn-remove:hover {
             background: rgba(220, 53, 69, 0.1);
+        }
+
+        /* Multi-File Preview */
+        .multi-file-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+
+        .multi-file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        .multi-file-item:last-child {
+            border-bottom: none;
+        }
+
+        .multi-file-summary {
+            background: var(--info-blue);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
         }
 
         /* Product Code Section */
@@ -462,11 +735,6 @@
             margin-left: auto;
         }
 
-        /* Icons */
-        .icon {
-            font-size: 1.1rem;
-        }
-
         /* Browser Support Warning */
         .browser-warning {
             background: var(--warning-orange);
@@ -482,14 +750,39 @@
         }
 
         /* Responsive Design */
+        @media (max-width: 1650px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .content-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+
         @media (max-width: 1200px) {
             .app-container {
                  margin: 1rem;
                  min-height: calc(100vh - 2rem);
             }
             .content-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
                 gap: 1.5rem;
+            }
+
+            .middle-panel {
+                order: 1;
+                grid-column: 1 / -1;
+            }
+
+            .left-panel {
+                order: 2;
+            }
+
+            .right-panel {
+                order: 3;
             }
         }
 
@@ -498,6 +791,23 @@
                 margin: 0;
                 border-radius: 0;
             }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .middle-panel {
+                order: 1;
+            }
+
+            .left-panel {
+                order: 2;
+            }
+
+            .right-panel {
+                order: 3;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -545,22 +855,13 @@
             border-radius: var(--border-radius);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             max-height: 90vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             animation: slideInModal 0.3s ease;
             transition: all 0.3s ease;
-        }
-
-        .modal-footer {
-            padding: 1rem 1.5rem;
-            background: var(--warning-orange);
-            color: #333;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         @keyframes slideInModal {
@@ -838,16 +1139,157 @@
             min-height: 30px;
         }
 
+        /* JDF Features */
+        .jdf-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .jdf-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--medium-gray);
+            padding-bottom: 0.5rem;
+        }
+
+        .folder-path {
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: monospace;
+        }
+
+        .jobs-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px;
+        }
+
+        .job-item {
+            padding: 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .job-item:hover {
+            background: #f8f9fa;
+        }
+
+        .job-item.selected {
+            background: #e7f3ff;
+            border-left: 4px solid var(--printex-primary);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-title {
+            font-weight: 500;
+            color: var(--printex-primary);
+        }
+
+        .use-job-btn {
+            background: var(--success-green);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Multi-File Features */
+        .multi-file-controls {
+            background: var(--info-blue);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .multi-file-controls.show {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-counter {
+            font-weight: 500;
+        }
+
+        .clear-all-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .clear-all-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Feature Toggle */
+        .feature-toggle {
+            background: var(--light-gray);
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 0.5rem;
+            background: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn.active {
+            background: var(--printex-primary);
+            color: white;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: var(--warning-orange);
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Header -->
         <header class="app-header">
             <div class="header-content">
                 <div class="logo-section">
                     <img src="images/Printex_Logo_Slogan_CMYK.png" alt="Printex Logo" onerror="this.style.display='none'">
-                    <span class="version">v2.5.1</span>
+                    <span class="version">v3.0 - mit JDF & Multi-PDF</span>
                 </div>
                 <div class="header-actions">
                     <button id="settingsBtn" class="btn btn-secondary">
@@ -860,17 +1302,14 @@
             </div>
         </header>
 
-        <!-- Browser Support Warning -->
         <div id="browserWarning" class="browser-warning">
             <strong>⚠️ Browser-Einschränkung:</strong>
             Die Hotfolder-Funktionalität funktioniert nur in Chrome oder Edge.
             In anderen Browsern steht nur der Download zur Verfügung.
         </div>
 
-        <!-- Main Content -->
         <main class="main-content">
             <div class="content-grid">
-                <!-- Left Panel: File Drop & Preview -->
                 <div class="left-panel">
                     <div class="file-drop-section">
                         <div id="fileDropZone" class="file-drop-zone">
@@ -878,12 +1317,14 @@
                                 <div class="drop-icon">
                                     <img src="images/DragDrop.png" alt="Drag and Drop Icon" onerror="this.innerHTML='📄'">
                                 </div>
-                                <h3>PDF hier hinziehen</h3>
-                                <p>oder klicken zum Auswählen</p>
-                                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+                                <h3 id="dropTitle">PDF hier hinziehen</h3>
+                                <p id="dropSubtitle">oder klicken zum Auswählen</p>
+                                <p class="multi-drop-hint">💡 Tipp: Mehrere Dateien für Sammelaufträge möglich</p>
+                                <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
                             </div>
                         </div>
 
+                        <!-- Single File Preview -->
                         <div id="filePreview" class="file-preview" style="display: none;">
                             <div class="preview-header">
                                 <span class="file-icon">📄</span>
@@ -893,6 +1334,20 @@
                                 </div>
                                 <button id="removeFile" class="btn-remove" title="Datei entfernen">❌</button>
                             </div>
+                        </div>
+
+                        <!-- Multi File Preview -->
+                        <div id="multiFilePreview" class="file-preview" style="display: none;">
+                            <div class="preview-header">
+                                <span class="file-icon">📄📄</span>
+                                <div class="file-info">
+                                    <div class="file-name" id="multiFileName">Mehrere PDF-Dateien</div>
+                                    <div class="file-size" id="multiFileSize"></div>
+                                </div>
+                                <button id="removeAllFiles" class="btn-remove" title="Alle Dateien entfernen">❌</button>
+                            </div>
+                            <div class="multi-file-list" id="multiFileList"></div>
+                            <div class="multi-file-summary" id="multiFileSummary"></div>
                         </div>
                     </div>
 
@@ -907,7 +1362,37 @@
                     </div>
                 </div>
 
-                <!-- Right Panel: Input Form -->
+                <!-- Neue JDF-Spalte -->
+                <div class="middle-panel">
+                    <div class="jdf-section">
+                        <div class="jdf-header">
+                            <h3>📋 JDF-Aufträge</h3>
+                            <div class="jdf-controls">
+                                <button id="selectJDFFolder" class="btn btn-secondary">📁</button>
+                                <button id="reloadJDFs" class="btn btn-secondary" style="display: none;">🔄</button>
+                            </div>
+                        </div>
+
+                        <div id="jdfFolderInfo" class="folder-info" style="display: none;">
+                            <div class="folder-path">
+                                <span id="jdfFolderName"></span>
+                                <small id="jdfJobCount"></small>
+                            </div>
+                        </div>
+
+                        <div id="jdfJobsList" class="jdf-jobs-container">
+                            <div class="no-folder-message">
+                                <div class="message-icon">📁</div>
+                                <h4>Kein JDF-Ordner gewählt</h4>
+                                <p>Klicken Sie auf das Ordner-Symbol, um einen JDF-Ordner auszuwählen</p>
+                                <button class="btn btn-primary" onclick="document.getElementById('selectJDFFolder').click()">
+                                    📁 Ordner wählen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="right-panel">
                     <form id="pdfRenameForm" class="rename-form" novalidate>
                         <div class="form-grid">
@@ -923,8 +1408,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="auftragsposition">Auftragsposition *</label>
-                                <input type="number" id="auftragsposition" name="auftragsposition" placeholder="1" min="1" required>
+                                <label for="auftragsposition">Auftragsposition</label>
+                                <input type="number" id="auftragsposition" name="auftragsposition" placeholder="1" min="1">
+                                <small class="field-hint">Optional - Standard: 1</small>
                             </div>
 
                             <div class="form-group">
@@ -960,7 +1446,6 @@
                                         <input type="radio" name="papierart" value="ungestrichen" id="ungestrichenRadio">
                                         <span>Ungestrichen</span>
                                     </label>
-                                    <!-- Custom paper type will be injected here -->
                                 </div>
                             </div>
 
@@ -977,7 +1462,6 @@
             </div>
         </main>
 
-        <!-- Footer Actions -->
         <footer class="app-footer">
             <div class="footer-content">
                 <div class="action-buttons">
@@ -985,17 +1469,17 @@
                         <span class="icon">💾</span> Download
                     </button>
                     <button id="saveToNormalBtn" class="btn btn-success" disabled>
-                        <span class="icon">🚀</span> In Normal-Hotfolder
+                        <span class="icon">🚀</span> Normal-Hotfolder
                     </button>
-                     <button id="saveToGangingBtn" class="btn btn-success" disabled>
-                        <span class="icon">🚀</span> In Sammelauftrags-Hotfolder
+                    <button id="saveToGangingBtn" class="btn btn-success" disabled>
+                        <span class="icon">🚀</span> Ganging-Hotfolder
                     </button>
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Modal für Einstellungen -->
+    <!-- Settings Modal -->
     <div id="settingsModal" class="modal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -1044,7 +1528,39 @@
                             <button id="addPaperBtn" class="btn btn-primary">Hinzufügen</button>
                         </div>
                     </div>
-                     <div id="hotfolderTab" class="tab-pane">
+                    <div id="jdfTab" class="tab-pane">
+                        <h3>JDF-Aufträge</h3>
+                        <p>Automatisches Ausfüllen der Formulardaten aus JDF-Dateien.</p>
+
+                        <div class="jdf-section">
+                            <div class="jdf-header">
+                                <h4>JDF-Ordner</h4>
+                                <button id="selectJDFFolder" class="btn btn-secondary">📁 Ordner wählen</button>
+                            </div>
+
+                            <div id="jdfFolderPath" class="folder-path" style="display: none;">
+                                <span id="jdfFolderName"></span>
+                                <button id="reloadJDFs" class="btn btn-secondary">🔄</button>
+                            </div>
+
+                            <div id="jdfJobsList" class="jobs-list">
+                                <div style="text-align: center; padding: 2rem; color: #6c757d; font-style: italic;">
+                                    Kein JDF-Ordner ausgewählt
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 1rem;">
+                            <h5>So funktioniert's:</h5>
+                            <ol style="margin: 0.5rem 0 0 1.5rem;">
+                                <li>JDF-Ordner auswählen</li>
+                                <li>Job aus der Liste wählen</li>
+                                <li>Daten werden automatisch ins Formular übernommen</li>
+                                <li>PDF zuweisen und verarbeiten</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div id="hotfolderTab" class="tab-pane">
                         <h3>Hotfolder verwalten</h3>
                         <div id="hotfolderSupport" class="browser-warning" style="display: none;">
                             <strong>❌ Nicht unterstützt:</strong>
@@ -1083,16 +1599,15 @@
         </div>
     </div>
 
-    <!-- JavaScript Module -->
     <script>
         // ===================================================================================
-        // Printex PDF Renamer - Fixed Version
+        // Printex PDF Renamer v3.0 - Erweiterte Version mit JDF & Multi-PDF
         // ===================================================================================
 
         // --- Constants ---
         const APP_INFO = {
             NAME: 'Printex PDF-Automation',
-            VERSION: '2.5.1',
+            VERSION: '3.0.0',
         };
 
         const FILE_CONSTANTS = {
@@ -1101,13 +1616,13 @@
         };
 
         const STORAGE_KEYS = {
-            DB_NAME: 'PrintexDB-v2',
+            DB_NAME: 'PrintexDB-v3',
             DB_STORE_HANDLES: 'hotfolderHandles'
         };
 
         // --- Embedded Configuration ---
         const EMBEDDED_CONFIG = {
-            "version": "2.5.1",
+            "version": "3.0.0",
             "customPaper": {
                 "id": "specialPaper",
                 "name": "Spezialpapier",
@@ -1169,6 +1684,12 @@
             ]
         };
 
+        // --- State Variables ---
+        let currentFiles = []; // Für Multi-File Support
+        let isMultiFileMode = false;
+        let jdfManager = null;
+        let selectedJob = null;
+
         // --- Helper Functions ---
         function generateUniqueId(prefix = 'id') {
             const timestamp = Date.now().toString(36);
@@ -1186,6 +1707,14 @@
                 isSupported: hasFileSystemAPI && (isChrome || isEdge),
                 browserName: isChrome ? 'Chrome' : isEdge ? 'Edge' : 'Unknown'
             };
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         // --- IndexedDB Helper ---
@@ -1325,6 +1854,20 @@
                     throw new Error(`Download fehlgeschlagen: ${error.message}`);
                 }
             }
+
+            async downloadMultipleFiles(files, productCode) {
+                const results = [];
+                for (const file of files) {
+                    try {
+                        const newFileName = `${productCode}${file.name}`;
+                        await this.downloadFile(file, newFileName);
+                        results.push({ file: file.name, success: true });
+                    } catch (error) {
+                        results.push({ file: file.name, success: false, error: error.message });
+                    }
+                }
+                return results;
+            }
         }
 
         class ProductCodeGenerator {
@@ -1345,8 +1888,7 @@
 
             validateInput(formData) {
                 const requiredFields = [
-                    'auftragsnummer', 'kunde', 'auftragsposition',
-                    'maschine', 'auflage', 'produkt', 'papierart', 'papiername'
+                    'auftragsnummer', 'kunde', 'maschine', 'auflage', 'produkt', 'papierart', 'papiername'
                 ];
 
                 return requiredFields.every(field => {
@@ -1367,7 +1909,7 @@
 
             buildAuftragsTeil(formData) {
                 const auftragsnummer = formData.auftragsnummer.trim().toUpperCase();
-                const position = formData.auftragsposition.toString().trim();
+                const position = formData.auftragsposition ? formData.auftragsposition.toString().trim() : '1';
                 const cleanAuftrag = auftragsnummer.startsWith('A') ? auftragsnummer : `A${auftragsnummer}`;
                 return `${cleanAuftrag}-${position}`;
             }
@@ -1517,6 +2059,285 @@
                     throw new Error(`Fehler beim Speichern: ${error.message}`);
                 }
             }
+
+            async saveMultipleToHotfolder(dirHandle, files, productCode) {
+                const results = [];
+                for (const file of files) {
+                    try {
+                        const newFileName = `${productCode}${file.name}`;
+                        await this.saveToHotfolder(dirHandle, file, newFileName);
+                        results.push({ file: file.name, success: true });
+                    } catch (error) {
+                        results.push({ file: file.name, success: false, error: error.message });
+                    }
+                }
+                return results;
+            }
+        }
+
+        class JDFManager {
+            constructor() {
+                this.jdfFolder = null;
+                this.jobs = [];
+            }
+
+            async selectJDFFolder() {
+                if (!checkBrowserSupport().isSupported) {
+                    throw new Error('Browser unterstützt Ordner-Auswahl nicht. Verwenden Sie Chrome oder Edge.');
+                }
+
+                try {
+                    this.jdfFolder = await window.showDirectoryPicker({
+                        mode: 'read',
+                        startIn: 'documents'
+                    });
+
+                    await this.loadJDFs();
+                    return this.jdfFolder;
+                } catch (error) {
+                    if (error.name === 'AbortError') return null;
+                    throw new Error(`JDF-Ordner konnte nicht geladen werden: ${error.message}`);
+                }
+            }
+
+            async loadJDFs() {
+                if (!this.jdfFolder) return;
+
+                this.jobs = [];
+                let jdfCount = 0;
+
+                try {
+                    await this.searchJDFsRecursively(this.jdfFolder, '');
+                    console.log(`${jdfCount} JDF-Dateien gefunden, ${this.jobs.length} Jobs geladen`);
+                } catch (error) {
+                    throw new Error(`Fehler beim Laden der JDF-Dateien: ${error.message}`);
+                }
+            }
+
+            async searchJDFsRecursively(dirHandle, path = '') {
+                try {
+                    for await (const [name, handle] of dirHandle.entries()) {
+                        const currentPath = path ? `${path}/${name}` : name;
+
+                        if (handle.kind === 'file' && name.toLowerCase().endsWith('.jdf')) {
+                            try {
+                                const file = await handle.getFile();
+                                const content = await file.text();
+                                const jobs = this.parseJDF(content, currentPath);
+                                this.jobs.push(...jobs);
+                            } catch (error) {
+                                console.warn(`Fehler beim Lesen von ${currentPath}:`, error);
+                            }
+                        } else if (handle.kind === 'directory') {
+                            // Rekursiv in Unterordner suchen
+                            await this.searchJDFsRecursively(handle, currentPath);
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Fehler beim Durchsuchen von ${path}:`, error);
+                }
+            }
+
+            parseJDF(xmlContent, fileName) {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(xmlContent, 'text/xml');
+
+                    const parseError = xmlDoc.querySelector('parsererror');
+                    if (parseError) {
+                        console.warn(`XML-Parse-Fehler in ${fileName}`);
+                        return [];
+                    }
+
+                    const jobs = [];
+
+                    // Suche nur nach Haupt-JDF-Knoten (nicht verschachtelte)
+                    const mainJdfNodes = Array.from(xmlDoc.querySelectorAll('JDF, jdf')).filter(node => {
+                        // Nur Top-Level JDF-Knoten, nicht verschachtelte
+                        const parent = node.parentElement;
+                        return !parent || parent.tagName.toLowerCase() !== 'jdf';
+                    });
+
+                    mainJdfNodes.forEach((jdfNode, index) => {
+                        const job = this.extractJobFromJDF(jdfNode, fileName, index);
+                        if (job) jobs.push(job);
+                    });
+
+                    return jobs;
+                } catch (error) {
+                    console.warn(`Fehler beim Parsen von ${fileName}:`, error);
+                    return [];
+                }
+            }
+
+            extractJobFromJDF(jdfNode, fileName, index) {
+                try {
+                    // JobID aus dem Hauptknoten extrahieren
+                    const jobId = jdfNode.getAttribute('JobID') || jdfNode.getAttribute('ID') || `Job_${index}`;
+                    const descriptiveName = jdfNode.getAttribute('DescriptiveName') || '';
+
+                    // Kundeninformationen extrahieren
+                    const customerInfo = this.extractCustomerInfo(jdfNode);
+
+                    // Auflage aus DropItemIntent extrahieren
+                    const runInfo = this.extractRunInfo(jdfNode);
+
+                    // Auftragsnummer formatieren
+                    let auftragsnummer = jobId;
+                    if (!auftragsnummer.startsWith('A')) {
+                        auftragsnummer = `A${auftragsnummer}`;
+                    }
+
+                    // Auflage formatieren (10000 → 10'000)
+                    let auflage = '';
+                    if (runInfo.amount) {
+                        const num = parseInt(runInfo.amount);
+                        if (!isNaN(num)) {
+                            auflage = num.toLocaleString('de-CH');
+                        }
+                    }
+
+                    return {
+                        id: `${fileName}_${jobId}_${index}`,
+                        fileName: fileName,
+                        filePath: fileName,
+                        displayName: `${auftragsnummer} - ${customerInfo.name || descriptiveName || 'Unbekannt'}`,
+                        formData: {
+                            auftragsnummer: auftragsnummer,
+                            kunde: customerInfo.name || '',
+                            auftragsposition: '', // Leer lassen wie gewünscht
+                            auflage: auflage,
+                            // Diese bleiben leer und müssen manuell gesetzt werden
+                            maschine: '',
+                            produkt: '',
+                            papierart: 'ungestrichen', // Default
+                            papiername: ''
+                        },
+                        source: {
+                            jobId: jobId,
+                            customer: customerInfo.name,
+                            amount: runInfo.amount,
+                            descriptiveName: descriptiveName,
+                            filePath: fileName
+                        }
+                    };
+                } catch (error) {
+                    console.warn(`Fehler beim Extrahieren von Job ${index} aus ${fileName}:`, error);
+                    return null;
+                }
+            }
+
+            extractCustomerInfo(jdfNode) {
+                // Suche nach Company OrganizationName
+                const company = jdfNode.querySelector('Company');
+                if (company) {
+                    const orgName = company.getAttribute('OrganizationName');
+                    if (orgName) {
+                        return { name: orgName };
+                    }
+                }
+
+                // Fallback: Suche nach anderen Kundeninformationen
+                const customerInfo = jdfNode.querySelector('CustomerInfo');
+                if (customerInfo) {
+                    const customerName = customerInfo.getAttribute('CustomerName') ||
+                                       customerInfo.getAttribute('CustomerJobName') || '';
+                    return { name: customerName };
+                }
+
+                const contact = jdfNode.querySelector('Contact[ContactTypes*="Customer"] Company');
+                if (contact) {
+                    const orgName = contact.getAttribute('OrganizationName');
+                    if (orgName) {
+                        return { name: orgName };
+                    }
+                }
+
+                return { name: '' };
+            }
+
+            extractRunInfo(jdfNode) {
+                // Suche nach DropItemIntent Amount
+                const dropItemIntent = jdfNode.querySelector('DropItemIntent');
+                if (dropItemIntent) {
+                    const amount = dropItemIntent.getAttribute('Amount');
+                    if (amount) {
+                        return { amount: amount };
+                    }
+                }
+
+                // Fallback: andere Quellen für Auflage
+                const runList = jdfNode.querySelector('RunList Run');
+                if (runList) {
+                    return {
+                        amount: runList.getAttribute('Amount') || runList.getAttribute('Run') || ''
+                    };
+                }
+
+                const outputComponent = jdfNode.querySelector('Component[Usage="Output"]');
+                if (outputComponent) {
+                    return {
+                        amount: outputComponent.getAttribute('Amount') || ''
+                    };
+                }
+
+                return { amount: '' };
+            }
+
+            extractPosition(jobPartId) {
+                // Extrahiere Position aus JobPartID (z.B. "100060-0" → "1")
+                if (typeof jobPartId === 'string' && jobPartId.includes('-')) {
+                    const parts = jobPartId.split('-');
+                    const lastPart = parts[parts.length - 1];
+                    const num = parseInt(lastPart);
+                    if (!isNaN(num)) {
+                        return (num + 1).toString(); // 0-basiert zu 1-basiert
+                    }
+                }
+                return '1'; // Default
+            }
+
+            getJobs() {
+                return this.jobs;
+            }
+
+            async deleteJDF(job) {
+                if (!this.jdfFolder) {
+                    throw new Error('Kein JDF-Ordner verfügbar');
+                }
+
+                try {
+                    // Navigiere zum korrekten Unterordner und lösche die Datei
+                    const pathParts = job.filePath.split('/');
+                    let currentDir = this.jdfFolder;
+
+                    // Navigiere durch Unterordner
+                    for (let i = 0; i < pathParts.length - 1; i++) {
+                        const dirName = pathParts[i];
+                        currentDir = await currentDir.getDirectoryHandle(dirName);
+                    }
+
+                    // Lösche die JDF-Datei
+                    const fileName = pathParts[pathParts.length - 1];
+                    await currentDir.removeEntry(fileName);
+
+                    // Entferne Job aus der Liste
+                    this.jobs = this.jobs.filter(j => j.id !== job.id);
+
+                    return true;
+                } catch (error) {
+                    console.error('Fehler beim Löschen der JDF-Datei:', error);
+                    throw new Error(`JDF-Datei konnte nicht gelöscht werden: ${error.message}`);
+                }
+            }
+
+            getJobs() {
+                return this.jobs;
+            }
+
+            getJob(jobId) {
+                return this.jobs.find(job => job.id === jobId);
+            }
         }
 
         class Validator {
@@ -1528,14 +2349,19 @@
                 return { valid: true };
             }
 
-            validateField(fieldName, value) {
-                if (!value || !value.toString().trim()) {
-                     return { valid: false, error: 'Feld darf nicht leer sein' };
-                }
-                if (fieldName === 'auftragsnummer' && !/^A\d+$/i.test(value)) {
-                    return { valid: false, error: 'Muss mit A beginnen, gefolgt von Zahlen' };
-                }
-                return { valid: true };
+            validateMultipleFiles(files) {
+                const results = { valid: [], invalid: [] };
+
+                Array.from(files).forEach((file, index) => {
+                    const validation = this.validateFile(file);
+                    if (validation.valid) {
+                        results.valid.push({ file, index });
+                    } else {
+                        results.invalid.push({ file, index, error: validation.error });
+                    }
+                });
+
+                return results;
             }
         }
 
@@ -1705,7 +2531,6 @@
         // --- Main Application Class ---
         class PrintexPDFRenamer {
             constructor() {
-                this.currentFile = null;
                 this.config = null;
                 this.hotfolderNormalHandle = null;
                 this.hotfolderGangingHandle = null;
@@ -1717,11 +2542,14 @@
                 this.validator = new Validator();
                 this.uiManager = new UIManager();
 
+                // Globale Referenz für JDF Manager
+                jdfManager = new JDFManager();
+
                 this.init();
             }
 
             async init() {
-                console.log('Printex PDF-Automation wird initialisiert...');
+                console.log('Printex PDF-Automation v3.0 wird initialisiert...');
 
                 try {
                     await this.loadConfiguration();
@@ -1730,7 +2558,7 @@
                     this.updateUIState();
                     this.updateProductCode();
 
-                    this.uiManager.showNotification('success', 'Bereit', 'PDF-Automation ist einsatzbereit.', 3000);
+                    this.uiManager.showNotification('success', 'Bereit', 'PDF-Automation v3.0 ist einsatzbereit.', 3000);
                 } catch (error) {
                     console.error('Initialization error:', error);
                     this.uiManager.showNotification('error', 'Initialisierungsfehler', error.message);
@@ -1876,22 +2704,27 @@
                             }
 
                             if (eventName === 'drop' && e.dataTransfer.files.length > 0) {
-                                this.processFile(e.dataTransfer.files[0]);
+                                this.processFiles(e.dataTransfer.files);
                             }
                         });
                     });
 
                     fileInput.addEventListener('change', (e) => {
                         if (e.target.files.length > 0) {
-                            this.processFile(e.target.files[0]);
+                            this.processFiles(e.target.files);
                         }
                     });
                 }
 
-                // Remove file button
+                // Remove file buttons
                 const removeFileBtn = document.getElementById('removeFile');
                 if (removeFileBtn) {
-                    removeFileBtn.addEventListener('click', () => this.removeFile());
+                    removeFileBtn.addEventListener('click', () => this.removeFiles());
+                }
+
+                const removeAllFilesBtn = document.getElementById('removeAllFiles');
+                if (removeAllFilesBtn) {
+                    removeAllFilesBtn.addEventListener('click', () => this.removeFiles());
                 }
 
                 // Form changes
@@ -1913,7 +2746,7 @@
                 }
 
                 // Action buttons
-                this.setupButton('downloadBtn', () => this.downloadRenamedFile());
+                this.setupButton('downloadBtn', () => this.downloadFiles());
                 this.setupButton('saveToNormalBtn', () => this.saveToHotfolder('normal'));
                 this.setupButton('saveToGangingBtn', () => this.saveToHotfolder('ganging'));
 
@@ -1924,7 +2757,7 @@
                 });
 
                 this.setupButton('helpBtn', () => {
-                    this.uiManager.showNotification('info', 'Hilfe', 'Ziehen Sie eine PDF-Datei in die Box und füllen Sie alle Formularfelder aus, um den Dateinamen zu generieren.', 8000);
+                    this.uiManager.showNotification('info', 'Hilfe', 'Ziehen Sie eine oder mehrere PDF-Dateien in die Box und füllen Sie alle Formularfelder aus. Bei mehreren Dateien erhalten alle denselben Produktcode für Sammelaufträge.', 8000);
                 });
 
                 // Settings modal delegation
@@ -1992,6 +2825,12 @@
                     this.uiManager.switchTab('papers');
                     this.uiManager.openModal('settingsModal');
                 });
+
+                // JDF buttons (now in main UI)
+                this.setupButton('selectJDFFolder', () => this.selectJDFFolder());
+                this.setupButton('reloadJDFs', () => this.reloadJDFs());
+
+                // Job selection through click events in renderJobsList()
             }
 
             setupButton(id, handler) {
@@ -2009,51 +2848,113 @@
                 }
             }
 
-            processFile(file) {
-                if (!file) return;
+            processFiles(files) {
+                if (!files || files.length === 0) return;
 
-                const validation = this.validator.validateFile(file);
-                if (!validation.valid) {
-                    this.uiManager.showNotification('error', 'Ungültige Datei', validation.error);
-                    return;
+                const validation = this.validator.validateMultipleFiles(files);
+
+                if (validation.invalid.length > 0) {
+                    const errors = validation.invalid.map(item => `${item.file.name}: ${item.error}`).join('\n');
+                    this.uiManager.showNotification('error', 'Ungültige Dateien', `Folgende Dateien konnten nicht verarbeitet werden:\n${errors}`);
                 }
 
-                this.currentFile = file;
+                if (validation.valid.length === 0) return;
 
-                const fileName = document.getElementById('fileName');
-                const fileSize = document.getElementById('fileSize');
-                const fileDropZone = document.getElementById('fileDropZone');
-                const filePreview = document.getElementById('filePreview');
+                // Store files
+                currentFiles = validation.valid.map(item => item.file);
+                isMultiFileMode = currentFiles.length > 1;
 
-                if (fileName) fileName.textContent = file.name;
-                if (fileSize) fileSize.textContent = `${(file.size / 1024 / 1024).toFixed(2)} MB`;
-                if (fileDropZone) fileDropZone.style.display = 'none';
-                if (filePreview) filePreview.style.display = 'block';
-
+                // Update UI
+                this.updateFilePreview();
                 this.updateUIState();
             }
 
-            removeFile() {
-                this.currentFile = null;
+            updateFilePreview() {
+                const singlePreview = document.getElementById('filePreview');
+                const multiPreview = document.getElementById('multiFilePreview');
+                const dropZone = document.getElementById('fileDropZone');
+
+                if (currentFiles.length === 0) {
+                    singlePreview.style.display = 'none';
+                    multiPreview.style.display = 'none';
+                    dropZone.style.display = 'block';
+                    return;
+                }
+
+                dropZone.style.display = 'none';
+
+                if (currentFiles.length === 1) {
+                    // Single file mode
+                    const file = currentFiles[0];
+                    const fileName = document.getElementById('fileName');
+                    const fileSize = document.getElementById('fileSize');
+
+                    if (fileName) fileName.textContent = file.name;
+                    if (fileSize) fileSize.textContent = formatFileSize(file.size);
+
+                    singlePreview.style.display = 'block';
+                    multiPreview.style.display = 'none';
+                } else {
+                    // Multi file mode
+                    const multiFileName = document.getElementById('multiFileName');
+                    const multiFileSize = document.getElementById('multiFileSize');
+                    const multiFileList = document.getElementById('multiFileList');
+                    const multiFileSummary = document.getElementById('multiFileSummary');
+
+                    const totalSize = currentFiles.reduce((sum, file) => sum + file.size, 0);
+
+                    if (multiFileName) multiFileName.textContent = `${currentFiles.length} PDF-Dateien`;
+                    if (multiFileSize) multiFileSize.textContent = formatFileSize(totalSize);
+
+                    // File list
+                    if (multiFileList) {
+                        multiFileList.innerHTML = currentFiles.map((file, index) => `
+                            <div class="multi-file-item">
+                                <span class="file-icon">📄</span>
+                                <span class="file-name">${file.name}</span>
+                                <span class="file-size">${formatFileSize(file.size)}</span>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Summary
+                    if (multiFileSummary) {
+                        multiFileSummary.textContent = `Alle Dateien erhalten denselben Produktcode für Sammelaufträge`;
+                    }
+
+                    singlePreview.style.display = 'none';
+                    multiPreview.style.display = 'block';
+                }
+            }
+
+            removeFiles() {
+                currentFiles = [];
+                isMultiFileMode = false;
 
                 const fileInput = document.getElementById('fileInput');
-                const fileDropZone = document.getElementById('fileDropZone');
-                const filePreview = document.getElementById('filePreview');
-
                 if (fileInput) fileInput.value = '';
-                if (fileDropZone) fileDropZone.style.display = 'block';
-                if (filePreview) filePreview.style.display = 'none';
 
+                this.updateFilePreview();
                 this.updateUIState();
             }
 
             updateUIState() {
-                const hasFile = !!this.currentFile;
+                const hasFiles = currentFiles.length > 0;
                 const formValid = this.isFormValid(this.getFormData());
 
-                this.updateButtonState('downloadBtn', hasFile && formValid);
-                this.updateButtonState('saveToNormalBtn', hasFile && formValid && !!this.hotfolderNormalHandle);
-                this.updateButtonState('saveToGangingBtn', hasFile && formValid && !!this.hotfolderGangingHandle);
+                this.updateButtonState('downloadBtn', hasFiles && formValid);
+                this.updateButtonState('saveToNormalBtn', hasFiles && formValid && !!this.hotfolderNormalHandle);
+                this.updateButtonState('saveToGangingBtn', hasFiles && formValid && !!this.hotfolderGangingHandle);
+
+                // Update button text for multi-file mode
+                const downloadBtn = document.getElementById('downloadBtn');
+                if (downloadBtn) {
+                    if (isMultiFileMode) {
+                        downloadBtn.innerHTML = '<span class="icon">💾</span> Alle downloaden';
+                    } else {
+                        downloadBtn.innerHTML = '<span class="icon">💾</span> Download';
+                    }
+                }
             }
 
             updateButtonState(buttonId, enabled) {
@@ -2063,39 +2964,76 @@
                 }
             }
 
-            async downloadRenamedFile() {
-                const downloadBtn = document.getElementById('downloadBtn');
-                if (!downloadBtn || downloadBtn.disabled || !this.currentFile) return;
+            async downloadFiles() {
+                if (currentFiles.length === 0) return;
 
-                const generatedCode = document.getElementById('generatedCode');
-                if (!generatedCode) return;
+                const formData = this.getFormData();
+                const productCode = this.productCodeGenerator.generate(formData, this.config);
 
-                const newFileName = `${generatedCode.textContent}${this.currentFile.name}`;
+                if (!productCode) {
+                    this.uiManager.showNotification('error', 'Fehler', 'Produktcode konnte nicht generiert werden');
+                    return;
+                }
 
                 try {
-                    await this.fileHandler.downloadFile(this.currentFile, newFileName);
-                    this.uiManager.showNotification('success', 'Download', 'Datei wurde umbenannt und heruntergeladen.');
+                    if (isMultiFileMode) {
+                        const results = await this.fileHandler.downloadMultipleFiles(currentFiles, productCode);
+                        const successCount = results.filter(r => r.success).length;
+                        const errorCount = results.filter(r => !r.success).length;
+
+                        if (errorCount === 0) {
+                            this.uiManager.showNotification('success', 'Download erfolgreich',
+                                `${successCount} Dateien wurden heruntergeladen`);
+                        } else {
+                            this.uiManager.showNotification('warning', 'Teilweise erfolgreich',
+                                `${successCount} Dateien heruntergeladen, ${errorCount} Fehler`);
+                        }
+                    } else {
+                        const newFileName = `${productCode}${currentFiles[0].name}`;
+                        await this.fileHandler.downloadFile(currentFiles[0], newFileName);
+                        this.uiManager.showNotification('success', 'Download erfolgreich',
+                            'Datei wurde umbenannt und heruntergeladen');
+                    }
                 } catch (error) {
-                    this.uiManager.showNotification('error', 'Fehler', error.message);
+                    this.uiManager.showNotification('error', 'Download-Fehler', error.message);
                 }
             }
 
             async saveToHotfolder(type) {
+                if (currentFiles.length === 0) return;
+
                 const handle = type === 'normal' ? this.hotfolderNormalHandle : this.hotfolderGangingHandle;
-                const button = document.getElementById(type === 'normal' ? 'saveToNormalBtn' : 'saveToGangingBtn');
+                if (!handle) return;
 
-                if (!button || button.disabled || !this.currentFile || !handle) return;
+                const formData = this.getFormData();
+                const productCode = this.productCodeGenerator.generate(formData, this.config);
 
-                const generatedCode = document.getElementById('generatedCode');
-                if (!generatedCode) return;
-
-                const newFileName = `${generatedCode.textContent}${this.currentFile.name}`;
+                if (!productCode) {
+                    this.uiManager.showNotification('error', 'Fehler', 'Produktcode konnte nicht generiert werden');
+                    return;
+                }
 
                 try {
-                    await this.hotfolderAPI.saveToHotfolder(handle, this.currentFile, newFileName);
-                    this.uiManager.showNotification('success', 'Gespeichert', `Datei im ${type}-Hotfolder abgelegt.`);
-                } catch(error) {
-                    this.uiManager.showNotification('error', 'Hotfolder Fehler', error.message);
+                    if (isMultiFileMode) {
+                        const results = await this.hotfolderAPI.saveMultipleToHotfolder(handle, currentFiles, productCode);
+                        const successCount = results.filter(r => r.success).length;
+                        const errorCount = results.filter(r => !r.success).length;
+
+                        if (errorCount === 0) {
+                            this.uiManager.showNotification('success', 'Gespeichert',
+                                `${successCount} Dateien im ${type}-Hotfolder abgelegt`);
+                        } else {
+                            this.uiManager.showNotification('warning', 'Teilweise erfolgreich',
+                                `${successCount} Dateien gespeichert, ${errorCount} Fehler`);
+                        }
+                    } else {
+                        const newFileName = `${productCode}${currentFiles[0].name}`;
+                        await this.hotfolderAPI.saveToHotfolder(handle, currentFiles[0], newFileName);
+                        this.uiManager.showNotification('success', 'Gespeichert',
+                            `Datei im ${type}-Hotfolder abgelegt`);
+                    }
+                } catch (error) {
+                    this.uiManager.showNotification('error', 'Hotfolder-Fehler', error.message);
                     if (error.message.includes("Berechtigung")) {
                          await this.loadHotfolders();
                     }
@@ -2141,6 +3079,216 @@
                 }
             }
 
+            // JDF Functions
+            async selectJDFFolder() {
+                if (!checkBrowserSupport().isSupported) {
+                    this.uiManager.showNotification('error', 'Nicht unterstützt', 'JDF-Funktionalität benötigt Chrome oder Edge.');
+                    return;
+                }
+
+                // Show loading state
+                this.showJDFLoading();
+
+                try {
+                    const folder = await jdfManager.selectJDFFolder();
+                    if (folder) {
+                        this.updateJDFUI();
+                        this.uiManager.showNotification('success', 'JDF-Ordner gewählt', `${jdfManager.jobs.length} Jobs gefunden`);
+                    } else {
+                        this.hideJDFLoading();
+                    }
+                } catch (error) {
+                    this.hideJDFLoading();
+                    this.uiManager.showNotification('error', 'JDF-Fehler', error.message);
+                }
+            }
+
+            async reloadJDFs() {
+                if (!jdfManager.jdfFolder) return;
+
+                this.showJDFLoading();
+
+                try {
+                    await jdfManager.loadJDFs();
+                    this.updateJDFUI();
+                    this.uiManager.showNotification('success', 'Neu geladen', `${jdfManager.jobs.length} Jobs gefunden`);
+                } catch (error) {
+                    this.hideJDFLoading();
+                    this.uiManager.showNotification('error', 'Reload-Fehler', error.message);
+                }
+            }
+
+            showJDFLoading() {
+                const jobsList = document.getElementById('jdfJobsList');
+                if (jobsList) {
+                    jobsList.innerHTML = `
+                        <div class="jdf-loading">
+                            <div class="spinner"></div>
+                            <div>JDF-Dateien werden geladen...</div>
+                        </div>
+                    `;
+                }
+            }
+
+            hideJDFLoading() {
+                const jobsList = document.getElementById('jdfJobsList');
+                if (jobsList && jdfManager.jobs.length === 0) {
+                    jobsList.innerHTML = `
+                        <div class="no-folder-message">
+                            <div class="message-icon">📁</div>
+                            <h4>Kein JDF-Ordner gewählt</h4>
+                            <p>Klicken Sie auf das Ordner-Symbol, um einen JDF-Ordner auszuwählen</p>
+                            <button class="btn btn-primary" onclick="document.getElementById('selectJDFFolder').click()">
+                                📁 Ordner wählen
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+
+            updateJDFUI() {
+                const folderInfo = document.getElementById('jdfFolderInfo');
+                const folderName = document.getElementById('jdfFolderName');
+                const jobCount = document.getElementById('jdfJobCount');
+                const reloadBtn = document.getElementById('reloadJDFs');
+
+                if (jdfManager.jdfFolder) {
+                    if (folderName) folderName.textContent = jdfManager.jdfFolder.name;
+                    if (jobCount) jobCount.textContent = `${jdfManager.jobs.length} Jobs`;
+                    if (folderInfo) folderInfo.style.display = 'block';
+                    if (reloadBtn) reloadBtn.style.display = 'block';
+
+                    this.renderJobsList();
+                } else {
+                    if (folderInfo) folderInfo.style.display = 'none';
+                    if (reloadBtn) reloadBtn.style.display = 'none';
+                    this.hideJDFLoading();
+                }
+            }
+
+            renderJobsList() {
+                const jobsList = document.getElementById('jdfJobsList');
+                if (!jobsList) return;
+
+                const jobs = jdfManager.getJobs();
+
+                if (jobs.length === 0) {
+                    jobsList.innerHTML = `
+                        <div class="no-folder-message">
+                            <div class="message-icon">📄</div>
+                            <h4>Keine JDF-Jobs gefunden</h4>
+                            <p>In den JDF-Dateien wurden keine gültigen Jobs gefunden</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                jobsList.innerHTML = jobs.map(job => {
+                    const isSelected = selectedJob?.id === job.id;
+
+                    return `
+                        <div class="jdf-job-item ${isSelected ? 'selected' : ''}" data-job-id="${job.id}">
+                            <div class="job-from-jdf">JDF</div>
+                            <div class="job-header">
+                                <div class="job-info">
+                                    <div class="job-title">${job.formData.auftragsnummer}</div>
+                                    <div class="job-customer">${job.formData.kunde || 'Unbekannter Kunde'}</div>
+                                    <div class="job-details">
+                                        ${job.formData.auflage ? `<div class="job-detail">📊 ${job.formData.auflage} Ex</div>` : ''}
+                                        <div class="job-detail">📁 ${job.fileName}</div>
+                                    </div>
+                                </div>
+                                <div class="job-actions">
+                                    <button class="use-job-btn" data-job-id="${job.id}">
+                                        ${isSelected ? '✓ Aktiv' : 'Verwenden'}
+                                    </button>
+                                    <button class="delete-jdf-btn" data-job-id="${job.id}" title="JDF löschen">🗑️</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Click events für Job-Items (nicht Buttons)
+                jobsList.querySelectorAll('.jdf-job-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('use-job-btn') &&
+                            !e.target.classList.contains('delete-jdf-btn')) {
+                            const jobId = item.dataset.jobId;
+                            if (jobId) {
+                                this.useJobData(jobId);
+                            }
+                        }
+                    });
+                });
+
+                // Event delegation für Lösch-Buttons
+                jobsList.querySelectorAll('.delete-jdf-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const jobId = btn.dataset.jobId;
+                        if (jobId) {
+                            this.deleteJDFJob(jobId);
+                        }
+                    });
+                });
+            }
+
+            useJobData(jobId) {
+                const job = jdfManager.getJob(jobId);
+                if (!job) return;
+
+                selectedJob = job;
+
+                // Fill form with job data
+                Object.entries(job.formData).forEach(([field, value]) => {
+                    const input = document.getElementById(field);
+                    if (input && value) {
+                        if (input.type === 'radio') {
+                            const radio = document.querySelector(`input[name="${field}"][value="${value}"]`);
+                            if (radio) radio.checked = true;
+                        } else {
+                            input.value = value;
+                        }
+                    }
+                });
+
+                // Update dropdowns and UI
+                this.populateDropdowns();
+                this.updateProductCode();
+                this.renderJobsList();
+
+                this.uiManager.showNotification('success', 'Job ausgewählt',
+                    `Formular mit Daten von "${job.formData.auftragsnummer}" gefüllt`);
+            }
+
+            async deleteJDFJob(jobId) {
+                const job = jdfManager.getJob(jobId);
+                if (!job) return;
+
+                this.uiManager.showConfirmDialog(
+                    'JDF-Datei löschen',
+                    `Möchten Sie die JDF-Datei "${job.fileName}" wirklich löschen?\n\nDie Datei wird dauerhaft aus dem Ordner entfernt!`,
+                    async () => {
+                        try {
+                            await jdfManager.deleteJDF(job);
+
+                            // Falls der gelöschte Job aktuell ausgewählt war, deselektieren
+                            if (selectedJob?.id === job.id) {
+                                selectedJob = null;
+                            }
+
+                            this.updateJDFUI();
+                            this.uiManager.showNotification('success', 'JDF gelöscht',
+                                `Die JDF-Datei "${job.fileName}" wurde erfolgreich gelöscht`);
+                        } catch (error) {
+                            this.uiManager.showNotification('error', 'Lösch-Fehler', error.message);
+                        }
+                    }
+                );
+            }
+
+            // Settings Functions
             populateSettingsLists() {
                  const populateList = (type, items) => {
                     const container = document.getElementById(`${type}List`);
@@ -2308,7 +3456,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 window.app = new PrintexPDFRenamer();
-                console.log('Printex PDF-Automation gestartet');
+                console.log('Printex PDF-Automation v3.0 gestartet');
             } catch (error) {
                 console.error('Application startup error:', error);
 
@@ -2328,6 +3476,19 @@
                 setTimeout(() => errorDiv.remove(), 10000);
             }
         });
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

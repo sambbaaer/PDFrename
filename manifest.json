@@ -1,0 +1,21 @@
+{
+  "name": "Printex PDF-Automation",
+  "short_name": "Printex PDF",
+  "description": "Ein Werkzeug zur Automatisierung der PDF-Umbenennung für den Druck-Workflow.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#395045",
+  "icons": [
+    {
+      "src": "images/Icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "images/Icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
